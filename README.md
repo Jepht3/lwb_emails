@@ -1,6 +1,6 @@
 # Templates e-mail LEWEBMAX
 
-Des modèles d'e-mails HTML pro et responsive, aux couleurs de [lewebmax.com](https://lewebmax.com) et de l'espace client [my.lewebmax.com](https://my.lewebmax.com) (WHMCS).
+5 thèmes d'e-mails HTML pro et responsive, à choisir en un clic dans WHMCS, aux couleurs de [lewebmax.com](https://lewebmax.com) et de l'espace client [my.lewebmax.com](https://my.lewebmax.com) (WHMCS).
 
 ## Charte utilisée
 
@@ -19,32 +19,50 @@ Elle est reprise du front-end de lewebmax.com.
 
 Le dossier `assets/` contient une copie des logos : bleu, blanc (pour fond sombre) et icône.
 
+## Les 5 thèmes
+
+| Thème | Style |
+|---|---|
+| **Classique** | En-tête blanc avec logo, liseré bleu et orange, carte blanche sur fond gris clair. Fidèle au site. |
+| **Prestige** | Bandeau et pied de page bleu nuit, logo dans un cartouche blanc, bouton WhatsApp orange. Fidèle à l'espace client. |
+| **Épuré** | Fond tout blanc, logo centré, filets fins. Sobre et élégant. |
+| **Moderne** | Grand bandeau en dégradé bleu avec accroche, pied de page sombre en trois colonnes. |
+| **Corporate** | Style lettre officielle : filet bleu, coordonnées en en-tête, contacts en deux colonnes. |
+
+Les boutons, tableaux d'informations, étiquettes et encadrés d'alerte sont identiques dans les 5 thèmes. Seuls l'en-tête, le pied de page et le cadre changent.
+
 ## Contenu
 
 ```
-whmcs/
-  email-css.css     CSS global (resets + mobile)
-  header.html       En-tête commun : logo, liseré bleu/orange, ouverture de la carte
-  footer.html       Pied commun : bloc d'aide (WhatsApp, e-mail, ticket) et mentions
-  templates/        Corps de chaque e-mail WHMCS (12 modèles)
-  templates.json    Correspondance fichier ↔ template WHMCS ↔ sujet
-standalone/
-  annonce.html      E-mail complet et autonome (promo, annonce, newsletter)
-previews/           Aperçus avec données fictives : ouvrez previews/index.html
-tools/
-  build-previews.js Regénère les aperçus
-assets/             Logos
+whmcs/modules/addons/lewebmax_emails/   Module WHMCS (à copier tel quel sur le serveur)
+  lewebmax_emails.php                   Page d'administration : choix du thème, installation, restauration
+  themes/<thème>/                       email.css, header.html, footer.html de chaque thème
+  themes.json                           Liste et description des thèmes
+  templates/                            Corps des 12 e-mails (communs aux 5 thèmes)
+  templates.json                        Correspondance fichier ↔ template WHMCS ↔ sujet
+dist/lewebmax_emails.zip                Le module zippé, prêt à téléverser
+standalone/annonce.html                 E-mail complet et autonome (promo, annonce, newsletter)
+previews/                               Aperçus avec données fictives : ouvrez previews/index.html
+tools/build-previews.js                 Regénère les aperçus
+assets/                                 Logos (bleu, blanc, icône)
 ```
 
-## Installation dans WHMCS
+## Installation dans WHMCS (avec le module, recommandé)
 
-1. **Configuration > Paramètres généraux > onglet Courriel**
-   - « Style CSS des e-mails » : collez `whmcs/email-css.css`
-   - « Contenu de l'en-tête des e-mails clients » : collez `whmcs/header.html`
-   - « Contenu du pied de page des e-mails clients » : collez `whmcs/footer.html`
-   - Vérifiez que les e-mails sont envoyés en **HTML** (pas en texte brut).
-2. **Configuration > Templates d'e-mails** : pour chaque modèle ci-dessous, ouvrez le template WHMCS, passez l'éditeur en mode code source, remplacez le contenu par le fichier correspondant et mettez le sujet indiqué.
-3. Utilisez le bouton d'aperçu de WHMCS puis envoyez-vous un e-mail test.
+1. Téléversez le dossier `lewebmax_emails` (ou décompressez `dist/lewebmax_emails.zip`) dans le dossier `modules/addons/` de votre WHMCS.
+2. Dans l'administration : **Configuration > Modules complémentaires** (Addon Modules), activez **LEWEBMAX E-mails** et donnez l'accès à votre rôle administrateur.
+3. Ouvrez **Modules complémentaires > LEWEBMAX E-mails** :
+   - cliquez sur **Utiliser ce thème** sous le design de votre choix (un aperçu de chaque thème est affiché) ;
+   - cliquez sur **Installer les 12 modèles** pour mettre les contenus en français, version par défaut et version « french » si elle existe ;
+   - **Restaurer les e-mails d'origine** remet les réglages et les modèles tels qu'ils étaient avant le module.
+4. Vérifiez dans **Configuration > Paramètres généraux > Courriel** que le type d'e-mail est **HTML**, puis envoyez-vous un e-mail test.
+
+Le module enregistre l'en-tête, le pied de page et le CSS globaux de WHMCS (`EmailGlobalHeader`, `EmailGlobalFooter`, `EmailCSS`). Pour changer de thème plus tard, il suffit de cliquer sur un autre.
+
+## Installation manuelle (sans module)
+
+1. **Configuration > Paramètres généraux > onglet Courriel** : collez le `email.css`, le `header.html` et le `footer.html` du thème choisi dans « Style CSS des e-mails », « Contenu de l'en-tête des e-mails clients » et « Contenu du pied de page des e-mails clients ».
+2. **Configuration > Templates d'e-mails** : pour chaque modèle ci-dessous, passez l'éditeur en mode code source, collez le fichier correspondant et mettez le sujet indiqué.
 
 | Fichier | Template WHMCS | Sujet |
 |---|---|---|
@@ -75,4 +93,4 @@ Les blocs se répètent d'un modèle à l'autre (étiquette orange, titre, table
 node tools/build-previews.js   # puis ouvrez previews/index.html
 ```
 
-Pour ajouter un modèle aux aperçus, déclarez-le dans `whmcs/templates.json`.
+Pour ajouter un modèle, déclarez-le dans `templates.json` du module : il sera alors installé par le module et inclus dans les aperçus. Pensez à refaire le ZIP (`cd whmcs/modules/addons && zip -r ../../../dist/lewebmax_emails.zip lewebmax_emails`).

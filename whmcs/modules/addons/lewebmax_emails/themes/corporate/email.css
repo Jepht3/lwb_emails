@@ -1,0 +1,22 @@
+/* LEWEBMAX — CSS du thème « corporate »
+   À coller dans WHMCS : Configuration > Paramètres généraux > Courriel > « Style CSS des e-mails »
+   (ou automatiquement via le module LEWEBMAX E-mails).
+   Les styles essentiels sont déjà en ligne dans les templates ; ce bloc ne sert qu'aux resets
+   et à l'adaptation mobile. */
+body { margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #f4f5fb; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+table, td { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+a { color: #030673; }
+a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; }
+.lwm-preheader { display: none !important; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0; overflow: hidden; mso-hide: all; }
+
+@media only screen and (max-width: 620px) {
+  .lwm-container { width: 100% !important; }
+  .lwm-pad { padding-left: 22px !important; padding-right: 22px !important; }
+  .lwm-card { padding: 30px 22px !important; border-radius: 0 !important; }
+  .lwm-h1 { font-size: 22px !important; line-height: 30px !important; }
+  .lwm-hide-mobile { display: none !important; }
+  .lwm-btn a { display: block !important; }
+  .lwm-col { display: block !important; width: 100% !important; padding: 0 0 16px 0 !important; text-align: left !important; }
+  .lwm-center-mobile { text-align: center !important; }
+}

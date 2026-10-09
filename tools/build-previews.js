@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// Assemble en-tête + corps + pied de chaque template WHMCS avec des données fictives,
-// pour prévisualiser les e-mails dans un navigateur.
-// Usage : node tools/build-previews.js  ->  previews/*.html
+// Assemble en-tête + corps + pied de chaque template WHMCS, pour chacun des thèmes,
+// avec des données fictives, pour prévisualiser les e-mails dans un navigateur.
+// Usage : node tools/build-previews.js  ->  previews/<thème>/*.html
 const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
+const mod = 'whmcs/modules/addons/lewebmax_emails';
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 
 const sample = {
@@ -58,12 +59,10 @@ const sample = {
 const fill = (html) =>
   html.replace(/\{\$([a-z0-9_]+)\}/g, (m, k) => (k in sample ? sample[k] : m));
 
-const css = read('whmcs/email-css.css');
-const header = read('whmcs/header.html');
-const footer = read('whmcs/footer.html');
-const list = JSON.parse(read('whmcs/templates.json'));
+const themes = JSON.parse(read(`${mod}/themes.json`));
+const list = JSON.parse(read(`${mod}/templates.json`));
 
-const page = (title, inner) => `<!DOCTYPE html>
+const page = (title, css, inner) => `<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -72,33 +71,45 @@ const page = (title, inner) => `<!DOCTYPE html>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>${css}</style>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f5fb;">
+<body style="margin:0;padding:0;">
 ${inner}
 </body>
 </html>
 `;
 
 const out = path.join(root, 'previews');
+fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
 
-const links = [];
-for (const t of list) {
-  const body = read(`whmcs/templates/${t.fichier}`);
-  const subject = fill(t.sujet);
-  fs.writeFileSync(path.join(out, t.fichier), page(subject, fill(header + body + footer)));
-  links.push(`<li><a href="${t.fichier}">${subject}</a> <small>(${t.template_whmcs})</small></li>`);
+const sections = [];
+for (const theme of themes) {
+  const dir = `${mod}/themes/${theme.slug}`;
+  const css = read(`${dir}/email.css`);
+  const header = read(`${dir}/header.html`);
+  const footer = read(`${dir}/footer.html`);
+  fs.mkdirSync(path.join(out, theme.slug), { recursive: true });
+  const links = [];
+  for (const t of list) {
+    const body = read(`${mod}/templates/${t.fichier}`);
+    const subject = fill(t.sujet);
+    fs.writeFileSync(path.join(out, theme.slug, t.fichier), page(subject, css, fill(header + body + footer)));
+    links.push(`<li><a href="${theme.slug}/${t.fichier}">${subject}</a> <small>(${t.template_whmcs})</small></li>`);
+  }
+  sections.push(`<h2>${theme.nom}</h2><p>${theme.description}</p><ul style="line-height:1.9">${links.join('\n')}</ul>`);
 }
 
 const standalone = path.join(root, 'standalone');
+const extra = [];
 for (const f of fs.readdirSync(standalone).filter((f) => f.endsWith('.html'))) {
   fs.copyFileSync(path.join(standalone, f), path.join(out, `standalone-${f}`));
-  links.push(`<li><a href="standalone-${f}">${f}</a> <small>(e-mail autonome)</small></li>`);
+  extra.push(`<li><a href="standalone-${f}">${f}</a></li>`);
 }
+sections.push(`<h2>E-mails autonomes</h2><ul>${extra.join('\n')}</ul>`);
 
 fs.writeFileSync(
   path.join(out, 'index.html'),
   `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Aperçus e-mails LEWEBMAX</title></head>
-<body style="font-family:Arial,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;color:#0d0d2b;">
-<h1>Aperçus e-mails LEWEBMAX</h1><ul style="line-height:2">${links.join('\n')}</ul></body></html>\n`
+<body style="font-family:Arial,sans-serif;max-width:760px;margin:40px auto;padding:0 16px;color:#0d0d2b;">
+<h1>Aperçus e-mails LEWEBMAX</h1>${sections.join('\n')}</body></html>\n`
 );
-console.log(`${links.length} aperçus générés dans previews/`);
+console.log(`${themes.length} thèmes × ${list.length} modèles générés dans previews/`);
