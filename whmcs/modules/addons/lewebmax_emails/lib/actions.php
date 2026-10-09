@@ -1,6 +1,6 @@
 <?php
 /**
- * LEWEBMAX E-mails — actions : thème, modèles, sauvegardes, e-mails de test.
+ * Lwb-emails — actions : thème, modèles, sauvegardes, e-mails de test.
  */
 
 use WHMCS\Database\Capsule;

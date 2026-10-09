@@ -1,6 +1,6 @@
 <?php
 /**
- * LEWEBMAX E-mails — interface d'administration (onglets).
+ * Lwb-emails — interface d'administration (onglets).
  */
 
 use WHMCS\Database\Capsule;

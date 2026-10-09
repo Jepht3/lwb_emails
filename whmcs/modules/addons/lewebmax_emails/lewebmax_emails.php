@@ -1,6 +1,6 @@
 <?php
 /**
- * LEWEBMAX E-mails — module d'administration WHMCS
+ * Lwb-emails — module d'administration WHMCS
  *
  * - Thèmes : 5 designs d'e-mail aux couleurs de LEWEBMAX, appliqués en un clic.
  * - Personnalisation : logos jour/nuit, coordonnées, réseaux sociaux (icônes), textes, bannière promo.
@@ -9,7 +9,7 @@
  * - Sauvegardes : tout ce qui est remplacé est sauvegardé et restaurable.
  *
  * Installation : copier le dossier dans /modules/addons/ de WHMCS, puis
- * Configuration > Modules complémentaires > LEWEBMAX E-mails > Activer.
+ * Configuration > Modules complémentaires > Lwb-emails > Activer.
  */
 
 if (!defined('WHMCS')) {
@@ -24,7 +24,7 @@ require_once __DIR__ . '/lib/admin.php';
 function lewebmax_emails_config()
 {
     return [
-        'name' => 'LEWEBMAX E-mails',
+        'name' => 'Lwb-emails',
         'description' => 'Thèmes d\'e-mail aux couleurs de LEWEBMAX : choix du design, personnalisation (logos, réseaux sociaux, coordonnées), modèles en français, aperçu et e-mails de test.',
         'version' => '2.1',
         'author' => 'LEWEBMAX',
@@ -36,7 +36,7 @@ function lewebmax_emails_activate()
 {
     try {
         lwm_create_backup_table();
-        return ['status' => 'success', 'description' => 'Module activé. Rendez-vous dans Modules complémentaires > LEWEBMAX E-mails.'];
+        return ['status' => 'success', 'description' => 'Module activé. Rendez-vous dans Modules complémentaires > Lwb-emails.'];
     } catch (\Exception $e) {
         return ['status' => 'error', 'description' => 'Impossible de créer la table de sauvegarde : ' . $e->getMessage()];
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * LEWEBMAX E-mails — paramètres modifiables (logos, coordonnées, réseaux, textes).
+ * Lwb-emails — paramètres modifiables (logos, coordonnées, réseaux, textes).
  * Stockés dans tbladdonmodules, comme les réglages de tout module WHMCS.
  */
 

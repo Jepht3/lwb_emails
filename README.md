@@ -33,7 +33,7 @@ Les boutons, tableaux d'informations, étiquettes et encadrés d'alerte sont ide
 
 ## Fonctionnalités du module (v2)
 
-Le module ajoute la page **Modules complémentaires > LEWEBMAX E-mails**, organisée en 5 onglets :
+Le module ajoute la page **Modules complémentaires > Lwb-emails**, organisée en 5 onglets :
 
 | Onglet | Rôle |
 |---|---|
@@ -74,8 +74,8 @@ assets/                                 Logos (bleu, blanc, icône)
 
 1. Téléversez le dossier `lewebmax_emails` (ou décompressez `dist/lewebmax_emails.zip`) dans le dossier `modules/addons/` de votre WHMCS.
 2. Copiez le contenu de `assets/icons/` dans un dossier public (par défaut `wp-content/uploads/lwm-email/icons/` sur lewebmax.com).
-3. Dans l'administration : **Configuration > Modules complémentaires** (Addon Modules), activez **LEWEBMAX E-mails** et donnez l'accès à votre rôle administrateur.
-4. Ouvrez **Modules complémentaires > LEWEBMAX E-mails** : vérifiez l'onglet Personnalisation, choisissez un thème, installez les modèles, puis envoyez-vous un e-mail de test.
+3. Dans l'administration : **Configuration > Modules complémentaires** (Addon Modules), activez **Lwb-emails** et donnez l'accès à votre rôle administrateur.
+4. Ouvrez **Modules complémentaires > Lwb-emails** : vérifiez l'onglet Personnalisation, choisissez un thème, installez les modèles, puis envoyez-vous un e-mail de test.
 
 Le module enregistre l'en-tête, le pied de page et le CSS globaux de WHMCS (`EmailGlobalHeader`, `EmailGlobalFooter`, `EmailCSS`), encodés comme le fait le formulaire de WHMCS. Seule la version par défaut (français) des modèles est remplacée ; les traductions restent intactes.
 

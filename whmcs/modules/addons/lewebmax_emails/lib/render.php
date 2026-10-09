@@ -1,6 +1,6 @@
 <?php
 /**
- * LEWEBMAX E-mails — construction des thèmes et des modèles à partir des paramètres.
+ * Lwb-emails — construction des thèmes et des modèles à partir des paramètres.
  */
 
 if (!defined('WHMCS')) {
