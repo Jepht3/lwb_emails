@@ -2,61 +2,61 @@
   {
     "fichier": "bienvenue-client.html",
     "template_whmcs": "Client Signup Email",
-    "sujet": "Bienvenue chez LEWEBMAX, {$client_first_name} !"
+    "sujet": "Bienvenue chez {$company_name}"
   },
   {
     "fichier": "reinitialisation-mot-de-passe.html",
     "template_whmcs": "Password Reset Validation",
-    "sujet": "Réinitialisez votre mot de passe LEWEBMAX"
+    "sujet": "Réinitialisation de votre mot de passe"
   },
   {
     "fichier": "facture-creee.html",
     "template_whmcs": "Invoice Created",
-    "sujet": "Facture n°{$invoice_num} disponible"
+    "sujet": "Votre facture n° {$invoice_num} est disponible"
   },
   {
     "fichier": "rappel-paiement.html",
     "template_whmcs": "Invoice Payment Reminder",
-    "sujet": "Rappel : facture n°{$invoice_num} à régler"
+    "sujet": "Rappel : facture n° {$invoice_num} à régler avant le {$invoice_date_due}"
   },
   {
     "fichier": "facture-en-retard.html",
     "template_whmcs": "First Invoice Overdue Notice",
-    "sujet": "Facture n°{$invoice_num} en retard de paiement"
+    "sujet": "Rappel : facture n° {$invoice_num} en retard de paiement"
   },
   {
     "fichier": "paiement-confirme.html",
     "template_whmcs": "Invoice Payment Confirmation",
-    "sujet": "Paiement reçu — merci {$client_first_name} !"
+    "sujet": "Reçu de paiement - Facture n° {$invoice_num}"
   },
   {
     "fichier": "bienvenue-hebergement.html",
-    "template_whmcs": "Hosting Account Welcome",
-    "sujet": "Votre hébergement {$service_product_name} est actif"
+    "template_whmcs": "Hosting Account Welcome Email",
+    "sujet": "Votre hébergement {$service_domain} est activé"
   },
   {
     "fichier": "domaine-enregistre.html",
     "template_whmcs": "Domain Registration Confirmation",
-    "sujet": "Votre domaine {$domain_name} est enregistré"
+    "sujet": "Confirmation d'enregistrement de votre domaine {$domain_name}"
   },
   {
     "fichier": "renouvellement-domaine.html",
     "template_whmcs": "Upcoming Domain Renewal Notice",
-    "sujet": "{$domain_name} expire dans {$domain_days_until_expiry} jours"
+    "sujet": "Votre domaine {$domain_name} arrive à expiration"
   },
   {
     "fichier": "service-suspendu.html",
     "template_whmcs": "Service Suspension Notification",
-    "sujet": "Service suspendu : {$service_domain}"
+    "sujet": "Suspension de votre service {$service_product_name}"
   },
   {
     "fichier": "ticket-ouvert.html",
     "template_whmcs": "Support Ticket Opened",
-    "sujet": "[Ticket #{$ticket_id}] {$ticket_subject}"
+    "sujet": "Votre demande d'assistance a bien été enregistrée"
   },
   {
     "fichier": "ticket-reponse.html",
     "template_whmcs": "Support Ticket Reply",
-    "sujet": "[Ticket #{$ticket_id}] {$ticket_subject}"
+    "sujet": "Réponse à votre demande d'assistance"
   }
 ]

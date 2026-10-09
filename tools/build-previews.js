@@ -13,8 +13,23 @@ const sample = {
   client_first_name: 'Jephté',
   client_email: 'jephte@exemple.cd',
   whmcs_url: 'https://my.lewebmax.com/',
-  signature: "L'équipe LEWEBMAX",
-  pw_reset_url: 'https://my.lewebmax.com/index.php?rp=/password/reset/redeem/abc123',
+  signature: '',
+  company_name: 'LE WEB MAX',
+  client_name: 'Jephté Topde',
+  reset_password_url: 'https://my.lewebmax.com/index.php?rp=/password/reset/redeem/abc123',
+  flexpay_pay_link: 'https://my.lewebmax.com/modules/gateways/flexpay/pay.php?id=1042',
+  invoice_amount_paid: '29,88 $ USD',
+  invoice_status: 'Payée',
+  invoice_html_contents:
+    '<table width="100%" style="border-collapse:collapse"><tr><td>Hébergement Pro (09/10/2026 - 08/10/2027)</td><td align="right">29,88 $ USD</td></tr><tr><td><strong>Total</strong></td><td align="right"><strong>29,88 $ USD</strong></td></tr></table>',
+  service_server_name: 'server.lewebmax.com',
+  service_ns1_ip: '102.68.10.25',
+  service_ns2_ip: '102.68.10.26',
+  domain_reg_date: '09/10/2026',
+  domain_days_until_nextdue: '30',
+  domain_renewal_url: 'https://my.lewebmax.com/cart.php?a=renewals',
+  domains_manage_url: 'https://my.lewebmax.com/clientarea.php?action=domains',
+  ticket_link: '<a href="https://my.lewebmax.com/viewticket.php?tid=482913">https://my.lewebmax.com/viewticket.php?tid=482913</a>',
   invoice_num: '2026-1042',
   invoice_date_created: '09/10/2026',
   invoice_date_due: '16/10/2026',
@@ -56,26 +71,17 @@ const sample = {
     'Bonjour Jephté,<br><br>Pour configurer votre adresse sur Outlook, utilisez le serveur <strong>mail.monentreprise.cd</strong>, port IMAP 993 (SSL) et SMTP 465 (SSL).<br><br>N\'hésitez pas si vous avez besoin d\'aide.',
 };
 
+// Interprète le strict nécessaire de Smarty : {$var}, {if $var}…{else}…{/if}, {if isset($var)}…{/if}.
 const fill = (html) =>
-  html.replace(/\{\$([a-z0-9_]+)\}/g, (m, k) => (k in sample ? sample[k] : m));
+  html
+    .replace(/\{if (?:isset\()?\$([a-z0-9_]+)\)?\}([\s\S]*?)(?:\{else\}([\s\S]*?))?\{\/if\}/g, (m, k, yes, no) =>
+      sample[k] ? yes : no || ''
+    )
+    .replace(/\{\$([a-z0-9_]+)\}/g, (m, k) => (k in sample ? sample[k] : ''));
+const stripComment = (html) => html.replace(/^\s*<!--[\s\S]*?-->\s*/, '');
 
 const themes = JSON.parse(read(`${mod}/themes.json`));
 const list = JSON.parse(read(`${mod}/templates.json`));
-
-const page = (title, css, inner) => `<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${title}</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>${css}</style>
-</head>
-<body style="margin:0;padding:0;">
-${inner}
-</body>
-</html>
-`;
 
 const out = path.join(root, 'previews');
 fs.rmSync(out, { recursive: true, force: true });
@@ -85,14 +91,14 @@ const sections = [];
 for (const theme of themes) {
   const dir = `${mod}/themes/${theme.slug}`;
   const css = read(`${dir}/email.css`);
-  const header = read(`${dir}/header.html`);
-  const footer = read(`${dir}/footer.html`);
+  const header = stripComment(read(`${dir}/header.html`)).replace('[EmailCSS]', css);
+  const footer = stripComment(read(`${dir}/footer.html`));
   fs.mkdirSync(path.join(out, theme.slug), { recursive: true });
   const links = [];
   for (const t of list) {
-    const body = read(`${mod}/templates/${t.fichier}`);
+    const body = stripComment(read(`${mod}/templates/${t.fichier}`));
     const subject = fill(t.sujet);
-    fs.writeFileSync(path.join(out, theme.slug, t.fichier), page(subject, css, fill(header + body + footer)));
+    fs.writeFileSync(path.join(out, theme.slug, t.fichier), fill(header + body + footer));
     links.push(`<li><a href="${theme.slug}/${t.fichier}">${subject}</a> <small>(${t.template_whmcs})</small></li>`);
   }
   sections.push(`<h2>${theme.nom}</h2><p>${theme.description}</p><ul style="line-height:1.9">${links.join('\n')}</ul>`);

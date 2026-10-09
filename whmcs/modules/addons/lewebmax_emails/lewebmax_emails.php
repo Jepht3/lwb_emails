@@ -10,7 +10,6 @@
  * Configuration > Modules complémentaires > LEWEBMAX E-mails > Activer.
  */
 
-use WHMCS\Config\Setting;
 use WHMCS\Database\Capsule;
 
 if (!defined('WHMCS')) {
@@ -19,7 +18,8 @@ if (!defined('WHMCS')) {
 
 const LWM_BACKUP_TABLE = 'mod_lewebmax_emails_backup';
 const LWM_SETTINGS = ['EmailCSS', 'EmailGlobalHeader', 'EmailGlobalFooter'];
-const LWM_TEMPLATE_LANGUAGES = ['', 'french'];
+// Seule la version par défaut (langue du système) est remplacée ; les traductions restent intactes.
+const LWM_TEMPLATE_LANGUAGES = [''];
 
 function lewebmax_emails_config()
 {
@@ -85,6 +85,25 @@ function lwm_theme_files($slug)
     ];
 }
 
+/**
+ * WHMCS enregistre l'en-tête, le pied et le CSS des e-mails encodés en entités HTML
+ * (comme le fait le formulaire Paramètres généraux > Courriel) ; on fait de même.
+ */
+function lwm_get_setting($key)
+{
+    return (string) Capsule::table('tblconfiguration')->where('setting', $key)->value('value');
+}
+
+function lwm_set_setting($key, $value, $encode = true)
+{
+    $stored = $encode ? htmlspecialchars($value, ENT_COMPAT | ENT_HTML401, 'UTF-8') : $value;
+    if (Capsule::table('tblconfiguration')->where('setting', $key)->exists()) {
+        Capsule::table('tblconfiguration')->where('setting', $key)->update(['value' => $stored]);
+    } else {
+        Capsule::table('tblconfiguration')->insert(['setting' => $key, 'value' => $stored]);
+    }
+}
+
 function lwm_has_backup($kind, $name = null, $language = '')
 {
     $q = Capsule::table(LWM_BACKUP_TABLE)->where('kind', $kind);
@@ -101,15 +120,15 @@ function lwm_apply_theme($slug)
             Capsule::table(LWM_BACKUP_TABLE)->insert([
                 'kind' => 'setting',
                 'name' => $key,
-                'value' => (string) Setting::getValue($key),
+                'value' => lwm_get_setting($key),
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
         }
     }
     foreach (lwm_theme_files($slug) as $key => $value) {
-        Setting::setValue($key, $value);
+        lwm_set_setting($key, $value);
     }
-    Setting::setValue('LewebmaxEmailTheme', $slug);
+    lwm_set_setting('LewebmaxEmailTheme', $slug, false);
 }
 
 function lwm_install_templates()
@@ -153,7 +172,8 @@ function lwm_restore()
 {
     foreach (Capsule::table(LWM_BACKUP_TABLE)->get() as $b) {
         if ($b->kind === 'setting') {
-            Setting::setValue($b->name, (string) $b->value);
+            // Valeur sauvegardée telle qu'elle était stockée : on la remet sans ré-encoder.
+            lwm_set_setting($b->name, (string) $b->value, false);
         } elseif ($b->kind === 'template') {
             Capsule::table('tblemailtemplates')
                 ->where('name', $b->name)
@@ -162,30 +182,43 @@ function lwm_restore()
         }
     }
     Capsule::table(LWM_BACKUP_TABLE)->delete();
-    Setting::setValue('LewebmaxEmailTheme', '');
+    lwm_set_setting('LewebmaxEmailTheme', '', false);
+}
+
+/**
+ * Interprète le strict nécessaire de Smarty pour l'aperçu : {$var}, {if $var}…{else}…{/if}
+ * et {if isset($var)}…{/if} (sans imbrication).
+ */
+function lwm_render_sample($html, array $sample)
+{
+    $html = preg_replace_callback(
+        '/\{if (?:isset\()?\$([a-z0-9_]+)\)?\}(.*?)(?:\{else\}(.*?))?\{\/if\}/s',
+        function ($m) use ($sample) {
+            return !empty($sample[$m[1]]) ? $m[2] : (isset($m[3]) ? $m[3] : '');
+        },
+        $html
+    );
+    return preg_replace_callback('/\{\$([a-z0-9_]+)\}/', function ($m) use ($sample) {
+        return isset($sample[$m[1]]) ? $sample[$m[1]] : '';
+    }, $html);
 }
 
 function lwm_sample_preview($slug)
 {
     $sample = [
         'client_first_name' => 'Jephté',
-        'signature' => 'L\'équipe LEWEBMAX',
+        'company_name' => 'LE WEB MAX',
         'invoice_num' => '2026-1042',
         'invoice_date_created' => '09/10/2026',
         'invoice_date_due' => '16/10/2026',
-        'invoice_payment_method' => 'Mobile Money',
         'invoice_total' => '29,88 $ USD',
         'invoice_link' => '#',
+        'flexpay_pay_link' => '#',
     ];
     $files = lwm_theme_files($slug);
-    $body = file_get_contents(lwm_path('templates/facture-creee.html'));
-    $html = $files['EmailGlobalHeader'] . $body . $files['EmailGlobalFooter'];
-    $html = preg_replace_callback('/\{\$([a-z0-9_]+)\}/', function ($m) use ($sample) {
-        return isset($sample[$m[1]]) ? $sample[$m[1]] : $m[0];
-    }, $html);
-    return '<!DOCTYPE html><html><head><meta charset="utf-8">'
-        . '<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">'
-        . '<style>' . $files['EmailCSS'] . '</style></head><body style="margin:0;">' . $html . '</body></html>';
+    $body = lwm_strip_doc_comment(file_get_contents(lwm_path('templates/facture-creee.html')));
+    $html = str_replace('[EmailCSS]', $files['EmailCSS'], $files['EmailGlobalHeader']) . $body . $files['EmailGlobalFooter'];
+    return lwm_render_sample($html, $sample);
 }
 
 function lewebmax_emails_output($vars)
@@ -217,7 +250,7 @@ function lewebmax_emails_output($vars)
         }
     }
 
-    $current = (string) Setting::getValue('LewebmaxEmailTheme');
+    $current = lwm_get_setting('LewebmaxEmailTheme');
     $token = generate_token('form');
 
     echo $notice;

@@ -53,11 +53,13 @@ assets/                                 Logos (bleu, blanc, icône)
 2. Dans l'administration : **Configuration > Modules complémentaires** (Addon Modules), activez **LEWEBMAX E-mails** et donnez l'accès à votre rôle administrateur.
 3. Ouvrez **Modules complémentaires > LEWEBMAX E-mails** :
    - cliquez sur **Utiliser ce thème** sous le design de votre choix (un aperçu de chaque thème est affiché) ;
-   - cliquez sur **Installer les 12 modèles** pour mettre les contenus en français, version par défaut et version « french » si elle existe ;
+   - cliquez sur **Installer les 12 modèles** pour remplacer la version par défaut (français) des modèles. Les traductions, par exemple « english », ne sont pas modifiées ;
    - **Restaurer les e-mails d'origine** remet les réglages et les modèles tels qu'ils étaient avant le module.
 4. Vérifiez dans **Configuration > Paramètres généraux > Courriel** que le type d'e-mail est **HTML**, puis envoyez-vous un e-mail test.
 
-Le module enregistre l'en-tête, le pied de page et le CSS globaux de WHMCS (`EmailGlobalHeader`, `EmailGlobalFooter`, `EmailCSS`). Pour changer de thème plus tard, il suffit de cliquer sur un autre.
+Le module enregistre l'en-tête, le pied de page et le CSS globaux de WHMCS (`EmailGlobalHeader`, `EmailGlobalFooter`, `EmailCSS`), encodés comme le fait le formulaire de WHMCS. L'en-tête de chaque thème est un document HTML complet qui contient l'emplacement `[EmailCSS]`, comme celui d'origine de WHMCS. Pour changer de thème plus tard, il suffit de cliquer sur un autre.
+
+Les modèles utilisent les variables de my.lewebmax.com : `{$reset_password_url}`, `{$domain_renewal_url}`, `{$ticket_link}`, et le lien de paiement Mobile Money `{$flexpay_pay_link}` fourni par le hook FlexPay (factures créées, rappels et retards).
 
 ## Installation manuelle (sans module)
 
@@ -79,7 +81,7 @@ Le module enregistre l'en-tête, le pied de page et le CSS globaux de WHMCS (`Em
 | `ticket-ouvert.html` | Support Ticket Opened | [Ticket #{$ticket_id}] {$ticket_subject} |
 | `ticket-reponse.html` | Support Ticket Reply | [Ticket #{$ticket_id}] {$ticket_subject} |
 
-> **À vérifier :** les variables (`{$...}`) suivent les noms standard de WHMCS. Si l'une d'elles reste vide dans un e-mail test, comparez-la avec la liste « Champs de fusion disponibles » affichée sous l'éditeur du template. Les plus susceptibles de varier selon la version sont `{$ticket_url}` et `{$service_server_hostname}`.
+> Les sujets reprennent ceux déjà configurés dans WHMCS. Les liens fixes pointent vers `https://my.lewebmax.com/` et l'accès cPanel vers `https://server.lewebmax.com:2083/`.
 
 ## E-mail autonome
 
