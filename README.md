@@ -39,11 +39,13 @@ Le module ajoute la page **Modules complémentaires > LEWEBMAX E-mails**, organi
 |---|---|
 | **Thèmes** | Aperçu des 5 designs avec vos paramètres ; application en un clic. |
 | **Personnalisation** | Logos jour (bleu) et nuit (blanc), site, espace client, e-mail, téléphone, WhatsApp, adresse, cPanel, réseaux sociaux (Facebook, Instagram, WhatsApp, LinkedIn, X, TikTok, YouTube, Telegram), style des icônes, textes (moyens de paiement, mention légale, accroche), bannière promotionnelle, mode nuit. **À l'enregistrement, le thème actif et les modèles installés sont régénérés automatiquement.** |
-| **Modèles** | État des 12 modèles (LEWEBMAX ou d'origine) ; installation ou restauration sélective. |
+| **Modèles** | État des 22 modèles dédiés (LEWEBMAX ou d'origine) ; installation ou restauration sélective. Bouton **« Harmoniser les autres modèles »** : les autres modèles clients de WHMCS (transferts, SSL, devis, remboursements…) gardent leur texte mais reçoivent la typographie et les couleurs LEWEBMAX, avec sauvegarde. |
 | **Aperçu & test** | N'importe quel modèle dans n'importe quel thème, en version ordinateur ou mobile ; envoi d'un e-mail de test via la configuration d'envoi de WHMCS. |
 | **Sauvegardes** | Liste des éléments sauvegardés ; restauration de l'en-tête et du pied, des modèles, ou de tout. |
 
 **Icônes des réseaux sociaux** : PNG en 3 jeux, dans `assets/icons/` : `bleu` (fond clair), `blanc` (fond sombre) et `couleur` (couleurs officielles). Les clients e-mail n'affichent ni SVG ni polices d'icônes. Les PNG doivent être publiés dans un dossier public, par défaut `https://lewebmax.com/wp-content/uploads/lwm-email/icons/`, réglable dans Personnalisation.
+
+**Notifications administrateur** : les notifications internes envoyées à l'administrateur (« WHMCS User Details Change »…) ont une mise en page imposée par le cœur de WHMCS. Elles ne peuvent pas être modifiées ; elles ne sont jamais envoyées aux clients.
 
 **Mode nuit** : sur les thèmes clairs, le logo bleu est remplacé par le logo blanc et les couleurs passent en sombre dans Apple Mail, iOS et Outlook. Gmail ignore ce réglage et applique sa propre inversion. Les thèmes Prestige et Moderne affichent directement le logo blanc sur le bandeau bleu.
 
@@ -58,7 +60,7 @@ whmcs/modules/addons/lewebmax_emails/   Module WHMCS (à copier tel quel sur le 
   lib/admin.php                         Interface d'administration (onglets)
   themes/<thème>/                       email.css, header.html, footer.html (avec des %%paramètres%%)
   themes.json                           Liste et description des thèmes
-  templates/                            Corps des 12 e-mails (communs aux 5 thèmes)
+  templates/                            Corps des 22 e-mails dédiés (communs aux 5 thèmes)
   templates.json                        Correspondance fichier ↔ template WHMCS ↔ sujet
   assets/icons/                         Icônes des réseaux sociaux (PNG)
 dist/lewebmax_emails.zip                Le module zippé, prêt à téléverser

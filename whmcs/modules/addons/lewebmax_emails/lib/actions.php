@@ -232,3 +232,74 @@ function lwm_send_test($to, $slug, $templateName)
     }
     return true;
 }
+
+/**
+ * Harmonisation automatique des autres modèles clients (ceux sans version LEWEBMAX dédiée) :
+ * on garde leur texte et on applique la typographie et les couleurs LEWEBMAX
+ * aux balises qui n'ont pas déjà un style.
+ */
+function lwm_harmonize_html($html)
+{
+    $font = 'font-family:' . LWM_FONT . ';';
+    $styles = [
+        'p' => 'margin:0 0 16px 0;' . $font . 'font-size:15px;line-height:24px;color:#575b78;',
+        'a' => 'color:#030673;font-weight:700;text-decoration:none;',
+        'strong' => 'color:#0d0d2b;',
+        'b' => 'color:#0d0d2b;',
+        'h1' => 'margin:0 0 16px 0;' . $font . 'font-size:24px;line-height:32px;font-weight:800;color:#0d0d2b;',
+        'h2' => 'margin:8px 0 12px 0;' . $font . 'font-size:20px;line-height:28px;font-weight:800;color:#0d0d2b;',
+        'h3' => 'margin:8px 0 10px 0;' . $font . 'font-size:17px;line-height:24px;font-weight:800;color:#0d0d2b;',
+        'ul' => 'margin:0 0 16px 0;padding-left:22px;' . $font . 'font-size:15px;line-height:24px;color:#575b78;',
+        'ol' => 'margin:0 0 16px 0;padding-left:22px;' . $font . 'font-size:15px;line-height:24px;color:#575b78;',
+        'li' => 'margin:0 0 6px 0;',
+    ];
+    foreach ($styles as $tag => $style) {
+        $html = preg_replace('/<' . $tag . '(?=[\s>])(?![^>]*\sstyle=)([^>]*)>/i', '<' . $tag . '$1 style="' . $style . '">', $html);
+    }
+    return '<div class="lwm-preheader" data-lwm="auto" style="display:none;max-height:0;overflow:hidden;mso-hide:all;"></div>' . "\n" . $html;
+}
+
+/** Modèles clients (version par défaut) qui n'ont pas de version LEWEBMAX dédiée. */
+function lwm_other_templates()
+{
+    return Capsule::table('tblemailtemplates')
+        ->where('language', '')
+        ->whereNotIn('type', ['admin'])
+        ->whereNotIn('name', array_keys(lwm_templates()))
+        ->where('plaintext', 0)
+        ->orderBy('name')
+        ->get();
+}
+
+function lwm_harmonize_others()
+{
+    $done = 0;
+    foreach (lwm_other_templates() as $row) {
+        if (strpos($row->message, 'data-lwm="') !== false) {
+            continue;
+        }
+        if (!lwm_has_backup('template', $row->name, $row->language)) {
+            Capsule::table(LWM_BACKUP_TABLE)->insert([
+                'kind' => 'template',
+                'name' => $row->name,
+                'language' => $row->language,
+                'subject' => $row->subject,
+                'value' => $row->message,
+                'plaintext' => (int) $row->plaintext,
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+        Capsule::table('tblemailtemplates')->where('id', $row->id)->update(['message' => lwm_harmonize_html($row->message)]);
+        $done++;
+    }
+    return $done;
+}
+
+function lwm_restore_others()
+{
+    $names = [];
+    foreach (lwm_other_templates() as $row) {
+        $names[] = $row->name;
+    }
+    return $names ? lwm_restore_templates($names) : [];
+}

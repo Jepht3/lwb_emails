@@ -1,0 +1,62 @@
+<!-- LEWEBMAX — Template WHMCS : « Credit Card Payment Confirmation »
+     Sujet : Reçu de paiement - Facture n° {$invoice_num}
+     Coller dans l'éditeur du template (mode HTML / code source). -->
+<div class="lwm-preheader" data-lwm="paiement-confirme-carte" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Nous avons bien reçu votre paiement pour la facture n° {$invoice_num}. Merci !</div>
+
+<p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Paiement confirmé</p>
+
+<h1 class="lwm-h1" style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:26px;line-height:34px;font-weight:800;color:#0d0d2b;">Merci, votre paiement est bien reçu</h1>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Bonjour {$client_first_name},</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e7f9f0" style="background-color:#e7f9f0;border-left:4px solid #12b76a;border-radius:8px;margin:0 0 24px 0;">
+  <tr><td style="padding:16px 20px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#05603a;"><strong>Paiement validé</strong> pour la facture n°&nbsp;{$invoice_num} émise le {$invoice_date_created}.</td></tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Montant</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;"><span style="color:#030673;font-size:16px;">{$invoice_last_payment_amount}</span></td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Moyen de paiement</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$invoice_payment_method} ({$invoice_pay_method_display_name})</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Transaction n°</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$invoice_last_payment_transid}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Total payé</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$invoice_amount_paid}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Solde restant</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$invoice_balance}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Statut</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$invoice_status}</td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="lwm-btn" style="margin:8px 0 26px 0;">
+  <tr>
+    <td align="center" bgcolor="#030673" style="background-color:#030673;border-radius:10px;">
+      <a href="%%client_url%%viewinvoice.php?id={$invoice_id}" target="_blank" style="display:inline-block;padding:14px 28px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Voir ma facture&nbsp;&rarr;</a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:8px 0 8px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;font-weight:800;color:#030673;">Détail de la facture</p>
+<div style="font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#575b78;margin:0 0 24px 0;">{$invoice_html_contents}</div>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#8a8ea8;">Cet e-mail tient lieu de reçu officiel pour ce paiement.</p>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Cordialement,<br>{if $signature}{$signature}{else}<strong style="color:#0d0d2b;">L&rsquo;équipe {$company_name}</strong>{/if}</p>

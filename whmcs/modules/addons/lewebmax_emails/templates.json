@@ -58,5 +58,55 @@
     "fichier": "ticket-reponse.html",
     "template_whmcs": "Support Ticket Reply",
     "sujet": "Réponse à votre demande d'assistance"
+  },
+  {
+    "fichier": "paiement-a-effectuer.html",
+    "template_whmcs": "Credit Card Payment Due",
+    "sujet": "Paiement à effectuer - Facture n° {$invoice_num}"
+  },
+  {
+    "fichier": "facture-creee-carte.html",
+    "template_whmcs": "Credit Card Invoice Created",
+    "sujet": "Nouvelle facture n° {$invoice_num}"
+  },
+  {
+    "fichier": "paiement-confirme-carte.html",
+    "template_whmcs": "Credit Card Payment Confirmation",
+    "sujet": "Reçu de paiement - Facture n° {$invoice_num}"
+  },
+  {
+    "fichier": "deuxieme-rappel.html",
+    "template_whmcs": "Second Invoice Overdue Notice",
+    "sujet": "Deuxième rappel : facture n° {$invoice_num} impayée"
+  },
+  {
+    "fichier": "dernier-rappel.html",
+    "template_whmcs": "Third Invoice Overdue Notice",
+    "sujet": "Dernier rappel avant suspension : facture n° {$invoice_num}"
+  },
+  {
+    "fichier": "commande-confirmee.html",
+    "template_whmcs": "Order Confirmation",
+    "sujet": "Confirmation de votre commande n° {$order_number}"
+  },
+  {
+    "fichier": "service-reactive.html",
+    "template_whmcs": "Service Unsuspension Notification",
+    "sujet": "Votre service {$service_product_name} est réactivé"
+  },
+  {
+    "fichier": "wp-toolkit-active.html",
+    "template_whmcs": "WP Toolkit Welcome Email",
+    "sujet": "{$service_product_name} est activé"
+  },
+  {
+    "fichier": "ticket-ouvert-admin.html",
+    "template_whmcs": "Support Ticket Opened by Admin",
+    "sujet": "{$ticket_subject}"
+  },
+  {
+    "fichier": "promo-avantages.html",
+    "template_whmcs": "LWM Promotion Avantages Clients",
+    "sujet": "Vos avantages LE WEB MAX : -5 % sur vos renouvellements et 10 % en parrainage"
   }
 ]

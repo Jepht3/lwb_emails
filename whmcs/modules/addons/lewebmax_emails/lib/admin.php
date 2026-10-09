@@ -83,6 +83,14 @@ function lwm_handle_post($tab)
                 $restored = lwm_restore_templates($names ?: null);
                 return [lwm_alert('info', count($restored) . ' modèle(s) remis dans leur version d\'origine.'), $tab === 'backups' ? 'backups' : 'templates'];
 
+            case 'harmonize':
+                $n = lwm_harmonize_others();
+                return [lwm_alert('success', $n . ' autre(s) modèle(s) harmonisé(s) aux couleurs LEWEBMAX (texte conservé, version d\'origine sauvegardée).'), 'templates'];
+
+            case 'restore_others':
+                $restored = lwm_restore_others();
+                return [lwm_alert('info', count($restored) . ' autre(s) modèle(s) remis dans leur version d\'origine.'), 'templates'];
+
             case 'restore_theme':
                 lwm_restore_theme();
                 return [lwm_alert('info', 'En-tête, pied de page et CSS d\'origine restaurés.'), 'backups'];
@@ -228,7 +236,7 @@ function lwm_tab_settings($link, $token)
 function lwm_tab_templates($link, $token)
 {
     $status = lwm_templates_status();
-    echo '<p>Cochez les modèles à installer (ou à remettre dans leur version d\'origine). Seule la version française par défaut est modifiée&nbsp;; '
+    echo '<p>Cochez les modèles LEWEBMAX à installer (ou à remettre dans leur version d\'origine). Seule la version française par défaut est modifiée&nbsp;; '
         . 'les traductions (english…) restent intactes. Les sujets sont conservés.</p>';
     echo lwm_form_open($link, $token, 'templates', 'install', ' id="lwm-tpl-form"');
     echo '<table class="table table-striped"><thead><tr><th style="width:30px;"><input type="checkbox" onclick="var c=this.checked;document.querySelectorAll(\'.lwm-cb\').forEach(function(x){x.checked=c});"></th>'
@@ -247,7 +255,24 @@ function lwm_tab_templates($link, $token)
     echo '</tbody></table>';
     echo '<button type="submit" class="btn btn-success">Installer / mettre à jour la sélection</button> '
         . '<button type="submit" class="btn btn-default" onclick="this.form.lwm_action.value=\'restore_templates\';return confirm(\'Remettre la sélection dans sa version d\\\'origine ?\');">Restaurer la sélection</button>';
-    echo '<p class="lwm-help" style="margin-top:10px;">Sans sélection, le bouton « Installer » traite les 12 modèles.</p></form>';
+    echo '<p class="lwm-help" style="margin-top:10px;">Sans sélection, le bouton « Installer » traite les ' . count($status) . ' modèles.</p></form>';
+
+    $others = lwm_other_templates();
+    $auto = 0;
+    foreach ($others as $row) {
+        if (strpos($row->message, 'data-lwm="') !== false) {
+            $auto++;
+        }
+    }
+    echo '<hr><h3>Autres modèles WHMCS</h3>'
+        . '<p>' . count($others) . ' autres modèles clients n\'ont pas de version dédiée (transferts, SSL, devis, remboursements…). '
+        . 'Ils utilisent déjà l\'en-tête et le pied de page du thème ; l\'harmonisation applique en plus la typographie et les couleurs LEWEBMAX à leur texte, sans le modifier. '
+        . '<strong>' . $auto . ' / ' . count($others) . '</strong> sont harmonisés.</p>'
+        . '<p class="lwm-help">Les notifications internes envoyées aux administrateurs (« WHMCS User Details Change »…) ont une mise en page imposée par WHMCS et ne peuvent pas être modifiées.</p>'
+        . lwm_form_open($link, $token, 'templates', 'harmonize', ' style="display:inline-block;margin-right:8px;"')
+        . '<button class="btn btn-success">Harmoniser les autres modèles</button></form>'
+        . lwm_form_open($link, $token, 'templates', 'restore_others', ' style="display:inline-block;" onsubmit="return confirm(\'Remettre les autres modèles dans leur version d\\\'origine ?\');"')
+        . '<button class="btn btn-default">Restaurer les autres modèles</button></form>';
 }
 
 function lwm_tab_preview($link, $token)

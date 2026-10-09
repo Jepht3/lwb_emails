@@ -1,0 +1,39 @@
+<!-- LEWEBMAX — Template WHMCS : « WP Toolkit Welcome Email »
+     Sujet : {$service_product_name} est activé
+     Coller dans l'éditeur du template (mode HTML / code source). -->
+<div class="lwm-preheader" data-lwm="wp-toolkit-active" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">{$service_product_name} est activé pour {$service_domain}.</div>
+
+<p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Service activé</p>
+
+<h1 class="lwm-h1" style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:26px;line-height:34px;font-weight:800;color:#0d0d2b;">{$service_product_name} est activé</h1>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Bonjour {$client_first_name},</p>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Merci pour votre achat&nbsp;! <strong style="color:#0d0d2b;">{$service_product_name}</strong> est désormais activé sur votre compte. Ses fonctionnalités avancées sont disponibles immédiatement depuis votre hébergement ou votre espace client.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Service</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_product_name}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Domaine</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_domain}</td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="lwm-btn" style="margin:8px 0 26px 0;">
+  <tr>
+    <td align="center" bgcolor="#030673" style="background-color:#030673;border-radius:10px;">
+      <a href="%%client_url%%clientarea.php?action=services" target="_blank" style="display:inline-block;padding:14px 28px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Accéder à mon espace client&nbsp;&rarr;</a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Cordialement,<br>{if $signature}{$signature}{else}<strong style="color:#0d0d2b;">L&rsquo;équipe {$company_name}</strong>{/if}</p>

@@ -1,0 +1,59 @@
+<!-- LEWEBMAX — Template WHMCS : « Third Invoice Overdue Notice »
+     Sujet : Dernier rappel avant suspension : facture n° {$invoice_num}
+     Coller dans l'éditeur du template (mode HTML / code source). -->
+<div class="lwm-preheader" data-lwm="dernier-rappel" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Dernier rappel : sans paiement, vos services seront suspendus.</div>
+
+<p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Dernier rappel</p>
+
+<h1 class="lwm-h1" style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:26px;line-height:34px;font-weight:800;color:#0d0d2b;">Dernier rappel avant suspension</h1>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Bonjour {$client_first_name},</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fdeeee" style="background-color:#fdeeee;border-left:4px solid #b42318;border-radius:8px;margin:0 0 24px 0;">
+  <tr><td style="padding:16px 20px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#7a1010;">Ceci est notre <strong>troisième et dernier rappel</strong>&nbsp;: la facture n°&nbsp;{$invoice_num} émise le {$invoice_date_created} reste impayée. Sans règlement, <strong>vos services seront suspendus</strong>.</td></tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Facture</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">n°&nbsp;{$invoice_num}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Échéance</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$invoice_date_due}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Solde dû</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;"><span style="color:#b42318;font-size:16px;">{$invoice_balance}</span></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+{if $flexpay_pay_link}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff7f3" style="background-color:#fff7f3;border:1px solid #ffd5c6;border-radius:12px;margin:0 0 24px 0;">
+  <tr><td style="padding:16px 20px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#0d0d2b;"><p style="margin:0 0 4px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;font-weight:800;color:#0d0d2b;">Payez en 1 minute par Mobile Money</p><p style="margin:0 0 6px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#575b78;">M-Pesa, Orange Money, Airtel Money, Afrimoney &mdash; sans vous connecter.</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" class="lwm-btn" style="margin:8px 0 8px 0;">
+  <tr>
+    <td align="center" bgcolor="#ff6a3d" style="background-color:#ff6a3d;border-radius:10px;">
+      <a href="{$flexpay_pay_link}" target="_blank" style="display:inline-block;padding:14px 28px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Payer ma facture maintenant&nbsp;&rarr;</a>
+    </td>
+  </tr>
+</table><p style="margin:0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#8a8ea8;word-break:break-all;">{$flexpay_pay_link}</p></td></tr>
+</table>
+{/if}
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="lwm-btn" style="margin:8px 0 26px 0;">
+  <tr>
+    <td align="center" bgcolor="#ff6a3d" style="background-color:#ff6a3d;border-radius:10px;">
+      <a href="%%client_url%%viewinvoice.php?id={$invoice_id}" target="_blank" style="display:inline-block;padding:14px 28px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Régler ma facture maintenant&nbsp;&rarr;</a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#8a8ea8;">Vous avez déjà effectué ce paiement&nbsp;? Merci de ne pas tenir compte de ce message.</p>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Cordialement,<br>{if $signature}{$signature}{else}<strong style="color:#0d0d2b;">L&rsquo;équipe {$company_name}</strong>{/if}</p>
