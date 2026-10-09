@@ -1,9 +1,10 @@
-<!-- LEWEBMAX — Template WHMCS : « First Invoice Overdue Notice »
-     Sujet : Rappel : facture n° {$invoice_num} en retard de paiement
-     Coller dans l'éditeur du template (mode HTML / code source). -->
+<!-- LEWEBMAX — Template WHMCS : « First Invoice Overdue Notice » (fr)
+     Sujet : Rappel : facture n° {$invoice_num} en retard de paiement -->
 <div class="lwm-preheader" data-lwm="facture-en-retard" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Votre facture n° {$invoice_num} est en retard. Réglez-la pour éviter la suspension.</div>
 
 <p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Paiement en retard</p>
+
+{$lwm_due_badge}
 
 <h1 class="lwm-h1" style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:26px;line-height:34px;font-weight:800;color:#0d0d2b;">Votre facture est en retard</h1>
 
@@ -58,4 +59,4 @@
 
 <p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#8a8ea8;">Vous avez déjà effectué ce paiement&nbsp;? Merci de ne pas tenir compte de ce message.</p>
 
-<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Cordialement,<br>{if $signature}{$signature}{else}<strong style="color:#0d0d2b;">L&rsquo;équipe {$company_name}</strong>{/if}</p>
+%%signature%%

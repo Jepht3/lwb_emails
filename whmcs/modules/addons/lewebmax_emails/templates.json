@@ -2,111 +2,199 @@
   {
     "fichier": "bienvenue-client.html",
     "template_whmcs": "Client Signup Email",
-    "sujet": "Bienvenue chez {$company_name}"
+    "service": "commercial",
+    "sujet": "Bienvenue chez {$company_name}",
+    "sujet_en": "Welcome to {$company_name}",
+    "apercu": "Votre compte client est prêt : hébergement, domaines et factures au même endroit.",
+    "apercu_en": "Your client account is ready: hosting, domains and invoices in one place."
   },
   {
     "fichier": "reinitialisation-mot-de-passe.html",
     "template_whmcs": "Password Reset Validation",
-    "sujet": "Réinitialisation de votre mot de passe"
+    "service": "support",
+    "sujet": "Réinitialisation de votre mot de passe",
+    "sujet_en": "Reset your password",
+    "apercu": "Choisissez un nouveau mot de passe pour votre compte LEWEBMAX.",
+    "apercu_en": "Choose a new password for your LEWEBMAX account."
   },
   {
     "fichier": "facture-creee.html",
     "template_whmcs": "Invoice Created",
-    "sujet": "Votre facture n° {$invoice_num} est disponible"
+    "service": "facturation",
+    "sujet": "Votre facture n° {$invoice_num} est disponible",
+    "sujet_en": "Your invoice #{$invoice_num} is available",
+    "apercu": "Facture de {$invoice_total}, à régler avant le {$invoice_date_due}.",
+    "apercu_en": "Invoice of {$invoice_total}, due by {$invoice_date_due}."
   },
   {
     "fichier": "rappel-paiement.html",
     "template_whmcs": "Invoice Payment Reminder",
-    "sujet": "Rappel : facture n° {$invoice_num} à régler avant le {$invoice_date_due}"
+    "service": "facturation",
+    "sujet": "Rappel : facture n° {$invoice_num} à régler avant le {$invoice_date_due}",
+    "sujet_en": "Reminder: invoice #{$invoice_num} due by {$invoice_date_due}",
+    "apercu": "Votre facture n° {$invoice_num} arrive à échéance le {$invoice_date_due}.",
+    "apercu_en": "Your invoice #{$invoice_num} is due on {$invoice_date_due}."
   },
   {
     "fichier": "facture-en-retard.html",
     "template_whmcs": "First Invoice Overdue Notice",
-    "sujet": "Rappel : facture n° {$invoice_num} en retard de paiement"
+    "service": "facturation",
+    "sujet": "Rappel : facture n° {$invoice_num} en retard de paiement",
+    "sujet_en": "Reminder: invoice #{$invoice_num} is overdue",
+    "apercu": "Votre facture n° {$invoice_num} est en retard. Réglez-la pour éviter la suspension.",
+    "apercu_en": "Your invoice #{$invoice_num} is overdue. Pay it to avoid suspension."
   },
   {
     "fichier": "paiement-confirme.html",
     "template_whmcs": "Invoice Payment Confirmation",
-    "sujet": "Reçu de paiement - Facture n° {$invoice_num}"
+    "service": "facturation",
+    "sujet": "Reçu de paiement - Facture n° {$invoice_num}",
+    "sujet_en": "Payment receipt - Invoice #{$invoice_num}",
+    "apercu": "Nous avons bien reçu votre paiement pour la facture n° {$invoice_num}. Merci !",
+    "apercu_en": "We have received your payment for invoice #{$invoice_num}. Thank you!"
   },
   {
     "fichier": "bienvenue-hebergement.html",
     "template_whmcs": "Hosting Account Welcome Email",
-    "sujet": "Votre hébergement {$service_domain} est activé"
+    "service": "support",
+    "sujet": "Votre hébergement {$service_domain} est activé",
+    "sujet_en": "Your hosting for {$service_domain} is active",
+    "apercu": "Vos accès d'hébergement pour {$service_domain} sont prêts. Conservez cet e-mail.",
+    "apercu_en": "Your hosting access for {$service_domain} is ready. Keep this email."
   },
   {
     "fichier": "domaine-enregistre.html",
     "template_whmcs": "Domain Registration Confirmation",
-    "sujet": "Confirmation d'enregistrement de votre domaine {$domain_name}"
+    "service": "commercial",
+    "sujet": "Confirmation d'enregistrement de votre domaine {$domain_name}",
+    "sujet_en": "Your domain {$domain_name} is registered",
+    "apercu": "Félicitations, {$domain_name} est enregistré à votre nom.",
+    "apercu_en": "Congratulations, {$domain_name} is registered in your name."
   },
   {
     "fichier": "renouvellement-domaine.html",
     "template_whmcs": "Upcoming Domain Renewal Notice",
-    "sujet": "Votre domaine {$domain_name} arrive à expiration"
+    "service": "facturation",
+    "sujet": "Votre domaine {$domain_name} arrive à expiration",
+    "sujet_en": "Your domain {$domain_name} is about to expire",
+    "apercu": "{$domain_name} expire dans {$domain_days_until_nextdue} jour(s). Renouvelez-le pour ne pas le perdre.",
+    "apercu_en": "{$domain_name} expires in {$domain_days_until_nextdue} day(s). Renew it so you don't lose it."
   },
   {
     "fichier": "service-suspendu.html",
     "template_whmcs": "Service Suspension Notification",
-    "sujet": "Suspension de votre service {$service_product_name}"
+    "service": "facturation",
+    "sujet": "Suspension de votre service {$service_product_name}",
+    "sujet_en": "Your service {$service_product_name} has been suspended",
+    "apercu": "Votre service {$service_product_name} a été suspendu. Voici comment le réactiver.",
+    "apercu_en": "Your service {$service_product_name} has been suspended. Here is how to reactivate it."
   },
   {
     "fichier": "ticket-ouvert.html",
     "template_whmcs": "Support Ticket Opened",
-    "sujet": "Votre demande d'assistance a bien été enregistrée"
+    "service": "support",
+    "sujet": "Votre demande d'assistance a bien été enregistrée",
+    "sujet_en": "Your support request has been received",
+    "apercu": "Votre ticket #{$ticket_id} est ouvert. Notre équipe vous répond rapidement.",
+    "apercu_en": "Your ticket #{$ticket_id} is open. Our team will reply shortly."
   },
   {
     "fichier": "ticket-reponse.html",
     "template_whmcs": "Support Ticket Reply",
-    "sujet": "Réponse à votre demande d'assistance"
+    "service": "support",
+    "sujet": "Réponse à votre demande d'assistance",
+    "sujet_en": "Reply to your support request",
+    "apercu": "Notre équipe a répondu à votre ticket #{$ticket_id}.",
+    "apercu_en": "Our team has replied to your ticket #{$ticket_id}."
   },
   {
     "fichier": "paiement-a-effectuer.html",
     "template_whmcs": "Credit Card Payment Due",
-    "sujet": "Paiement à effectuer - Facture n° {$invoice_num}"
+    "service": "facturation",
+    "sujet": "Paiement à effectuer - Facture n° {$invoice_num}",
+    "sujet_en": "Payment due - Invoice #{$invoice_num}",
+    "apercu": "Le paiement de la facture n° {$invoice_num} est attendu pour le {$invoice_date_due}.",
+    "apercu_en": "Payment of invoice #{$invoice_num} is expected by {$invoice_date_due}."
   },
   {
     "fichier": "facture-creee-carte.html",
     "template_whmcs": "Credit Card Invoice Created",
-    "sujet": "Nouvelle facture n° {$invoice_num}"
+    "service": "facturation",
+    "sujet": "Nouvelle facture n° {$invoice_num}",
+    "sujet_en": "New invoice #{$invoice_num}",
+    "apercu": "Nouvelle facture de {$invoice_total}, échéance le {$invoice_date_due}.",
+    "apercu_en": "New invoice of {$invoice_total}, due on {$invoice_date_due}."
   },
   {
     "fichier": "paiement-confirme-carte.html",
     "template_whmcs": "Credit Card Payment Confirmation",
-    "sujet": "Reçu de paiement - Facture n° {$invoice_num}"
+    "service": "facturation",
+    "sujet": "Reçu de paiement - Facture n° {$invoice_num}",
+    "sujet_en": "Payment receipt - Invoice #{$invoice_num}",
+    "apercu": "Nous avons bien reçu votre paiement pour la facture n° {$invoice_num}. Merci !",
+    "apercu_en": "We have received your payment for invoice #{$invoice_num}. Thank you!"
   },
   {
     "fichier": "deuxieme-rappel.html",
     "template_whmcs": "Second Invoice Overdue Notice",
-    "sujet": "Deuxième rappel : facture n° {$invoice_num} impayée"
+    "service": "facturation",
+    "sujet": "Deuxième rappel : facture n° {$invoice_num} impayée",
+    "sujet_en": "Second reminder: invoice #{$invoice_num} unpaid",
+    "apercu": "Votre facture n° {$invoice_num} reste impayée. Réglez-la pour éviter la suspension.",
+    "apercu_en": "Your invoice #{$invoice_num} is still unpaid. Pay it to avoid suspension."
   },
   {
     "fichier": "dernier-rappel.html",
     "template_whmcs": "Third Invoice Overdue Notice",
-    "sujet": "Dernier rappel avant suspension : facture n° {$invoice_num}"
+    "service": "facturation",
+    "sujet": "Dernier rappel avant suspension : facture n° {$invoice_num}",
+    "sujet_en": "Final notice before suspension: invoice #{$invoice_num}",
+    "apercu": "Dernier rappel : sans paiement, vos services seront suspendus.",
+    "apercu_en": "Final notice: without payment, your services will be suspended."
   },
   {
     "fichier": "commande-confirmee.html",
     "template_whmcs": "Order Confirmation",
-    "sujet": "Confirmation de votre commande n° {$order_number}"
+    "service": "commercial",
+    "sujet": "Confirmation de votre commande n° {$order_number}",
+    "sujet_en": "Order confirmation #{$order_number}",
+    "apercu": "Merci pour votre commande n° {$order_number}, elle est en cours de traitement.",
+    "apercu_en": "Thank you for your order #{$order_number}, it is being processed."
   },
   {
     "fichier": "service-reactive.html",
     "template_whmcs": "Service Unsuspension Notification",
-    "sujet": "Votre service {$service_product_name} est réactivé"
+    "service": "support",
+    "sujet": "Votre service {$service_product_name} est réactivé",
+    "sujet_en": "Your service {$service_product_name} has been reactivated",
+    "apercu": "Bonne nouvelle : votre service {$service_product_name} fonctionne de nouveau.",
+    "apercu_en": "Good news: your service {$service_product_name} is working again."
   },
   {
     "fichier": "wp-toolkit-active.html",
     "template_whmcs": "WP Toolkit Welcome Email",
-    "sujet": "{$service_product_name} est activé"
+    "service": "support",
+    "sujet": "{$service_product_name} est activé",
+    "sujet_en": "{$service_product_name} is now active",
+    "apercu": "{$service_product_name} est activé pour {$service_domain}.",
+    "apercu_en": "{$service_product_name} is active for {$service_domain}."
   },
   {
     "fichier": "ticket-ouvert-admin.html",
     "template_whmcs": "Support Ticket Opened by Admin",
-    "sujet": "{$ticket_subject}"
+    "service": "support",
+    "sujet": "{$ticket_subject}",
+    "sujet_en": "{$ticket_subject}",
+    "apercu": "Notre équipe vous a écrit au sujet du ticket #{$ticket_id}.",
+    "apercu_en": "Our team wrote to you about ticket #{$ticket_id}."
   },
   {
     "fichier": "promo-avantages.html",
     "template_whmcs": "LWM Promotion Avantages Clients",
-    "sujet": "Vos avantages LE WEB MAX : -5 % sur vos renouvellements et 10 % en parrainage"
+    "service": "commercial",
+    "sujet": "Vos avantages LE WEB MAX : -5 % sur vos renouvellements et 10 % en parrainage",
+    "sujet_en": "Your LE WEB MAX benefits: 5% off renewals and 10% referral commission",
+    "apercu": "-5 % sur vos renouvellements payés en avance et 10 % de commission en parrainage.",
+    "apercu_en": "5% off renewals paid early and 10% referral commission."
   }
 ]

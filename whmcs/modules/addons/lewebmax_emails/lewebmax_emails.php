@@ -26,7 +26,7 @@ function lewebmax_emails_config()
     return [
         'name' => 'Lwb-emails',
         'description' => 'Thèmes d\'e-mail aux couleurs de LEWEBMAX : choix du design, personnalisation (logos, réseaux sociaux, coordonnées), modèles en français, aperçu et e-mails de test.',
-        'version' => '2.1',
+        'version' => '2.2',
         'author' => 'LEWEBMAX',
         'fields' => [],
     ];

@@ -1,9 +1,10 @@
-<!-- LEWEBMAX — Template WHMCS : « Third Invoice Overdue Notice »
-     Sujet : Dernier rappel avant suspension : facture n° {$invoice_num}
-     Coller dans l'éditeur du template (mode HTML / code source). -->
+<!-- LEWEBMAX — Template WHMCS : « Third Invoice Overdue Notice » (fr)
+     Sujet : Dernier rappel avant suspension : facture n° {$invoice_num} -->
 <div class="lwm-preheader" data-lwm="dernier-rappel" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Dernier rappel : sans paiement, vos services seront suspendus.</div>
 
 <p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Dernier rappel</p>
+
+{$lwm_due_badge}
 
 <h1 class="lwm-h1" style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:26px;line-height:34px;font-weight:800;color:#0d0d2b;">Dernier rappel avant suspension</h1>
 
@@ -56,4 +57,4 @@
 
 <p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#8a8ea8;">Vous avez déjà effectué ce paiement&nbsp;? Merci de ne pas tenir compte de ce message.</p>
 
-<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Cordialement,<br>{if $signature}{$signature}{else}<strong style="color:#0d0d2b;">L&rsquo;équipe {$company_name}</strong>{/if}</p>
+%%signature%%

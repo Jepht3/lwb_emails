@@ -1,0 +1,179 @@
+<!-- LEWEBMAX — Template WHMCS : « Hosting Account Welcome Email » (en)
+     Sujet : Your hosting for {$service_domain} is active -->
+<div class="lwm-preheader" data-lwm="bienvenue-hebergement" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Your hosting access for {$service_domain} is ready. Keep this email.</div>
+
+<p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Hosting activated</p>
+
+<h1 class="lwm-h1" style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:26px;line-height:34px;font-weight:800;color:#0d0d2b;">Your hosting is live!</h1>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Hello {$client_first_name},</p>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Thank you for your order! Your <strong style="color:#0d0d2b;">{$service_product_name}</strong> hosting account is ready. Here is everything you need to get started.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff1ec" style="background-color:#fff1ec;border-left:4px solid #ff6a3d;border-radius:8px;margin:0 0 24px 0;">
+  <tr><td style="padding:16px 20px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#7a2e14;"><strong>Keep this email safe:</strong> it contains your login details. Change your password after your first login.</td></tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td colspan="2" style="padding:14px 0 4px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;font-weight:800;color:#030673;">cPanel access</td></tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Username</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_username}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Password</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_password}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Address</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;"><a href="%%cpanel_url%%" target="_blank" style="color:#030673;font-weight:700;text-decoration:none;">%%cpanel_label%%</a></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="lwm-btn" style="margin:8px 0 26px 0;">
+  <tr>
+    <td align="center" bgcolor="#030673" style="background-color:#030673;border-radius:10px;">
+      <a href="%%cpanel_url%%" target="_blank" style="display:inline-block;padding:14px 28px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Open my cPanel&nbsp;&rarr;</a>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td colspan="2" style="padding:14px 0 4px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;font-weight:800;color:#030673;">Your plan</td></tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Plan</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_product_name}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Domain</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_domain}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">First payment</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_first_payment_amount}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Recurring amount</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_recurring_amount}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Billing cycle</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_billing_cycle}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Next due date</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_next_due_date}</td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td colspan="2" style="padding:14px 0 4px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;font-weight:800;color:#030673;">Server and DNS</td></tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Nameserver 1</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_ns1} ({$service_ns1_ip})</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Nameserver 2</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_ns2} ({$service_ns2_ip}){if $service_ns3}<br>{$service_ns3} ({$service_ns3_ip}){/if}{if $service_ns4}<br>{$service_ns4} ({$service_ns4_ip}){/if}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Server name</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_server_name}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Server IP</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_server_ip}</td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef0fb" style="background-color:#eef0fb;border-left:4px solid #030673;border-radius:8px;margin:0 0 24px 0;">
+  <tr><td style="padding:16px 20px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;color:#0d0d2b;">Using an existing domain? Point its nameservers to the ones above. A new domain can take up to 48 hours to be reachable everywhere (DNS propagation).</td></tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td colspan="2" style="padding:14px 0 4px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;font-weight:800;color:#030673;">Temporary access (before propagation)</td></tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">FTP host</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_server_ip}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Website</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;"><a href="http://{$service_server_ip}/~{$service_username}/" target="_blank" style="color:#030673;font-weight:700;text-decoration:none;">{$service_server_ip}/~{$service_username}/</a></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td colspan="2" style="padding:14px 0 4px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;font-weight:800;color:#030673;">Permanent access (after propagation)</td></tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">FTP host</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">{$service_domain}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Website</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;"><a href="http://www.{$service_domain}" target="_blank" style="color:#030673;font-weight:700;text-decoration:none;">www.{$service_domain}</a></td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">cPanel</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;"><a href="https://{$service_domain}/cpanel" target="_blank" style="color:#030673;font-weight:700;text-decoration:none;">{$service_domain}/cpanel</a></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td colspan="2" style="padding:14px 0 4px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;font-weight:800;color:#030673;">Email settings</td></tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Incoming server (IMAP/POP3)</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">mail.{$service_domain}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Outgoing server (SMTP)</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">mail.{$service_domain}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Username</td>
+        <td align="right" style="padding:11px 0;border-bottom:1px solid #e2e5f2;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">the full email address</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 12px 11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;color:#575b78;">Password</td>
+        <td align="right" style="padding:11px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:20px;font-weight:700;color:#0d0d2b;word-break:break-word;">the one set in cPanel</td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Thank you for choosing us. Migrating your existing website is free: just ask our support team.</p>
+
+%%signature%%

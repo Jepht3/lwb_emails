@@ -11,8 +11,8 @@ if (!defined('WHMCS')) {
 
 const LWM_BACKUP_TABLE = 'mod_lewebmax_emails_backup';
 const LWM_SETTINGS_KEYS = ['EmailCSS', 'EmailGlobalHeader', 'EmailGlobalFooter'];
-// Seule la version par défaut (langue du système) est remplacée ; les traductions restent intactes.
-const LWM_TEMPLATE_LANGUAGES = [''];
+// Version par défaut (français) et version anglaise des modèles ; les autres traductions restent intactes.
+const LWM_TEMPLATE_LANGUAGES = ['' => 'fr', 'english' => 'en'];
 
 function lwm_create_backup_table()
 {
@@ -88,10 +88,13 @@ function lwm_templates_status()
     $status = [];
     foreach (lwm_templates() as $name => $tpl) {
         $row = Capsule::table('tblemailtemplates')->where('name', $name)->where('language', '')->first();
+        $en = Capsule::table('tblemailtemplates')->where('name', $name)->where('language', 'english')->first();
         $status[$name] = [
             'tpl' => $tpl,
             'exists' => (bool) $row,
             'installed' => $row && strpos($row->message, 'data-lwm="') !== false,
+            'en_exists' => (bool) $en,
+            'en_installed' => $en && strpos($en->message, 'data-lwm="') !== false,
             'disabled' => $row && $row->disabled,
             'backup' => lwm_has_backup('template', $name, ''),
             'subject' => $row ? $row->subject : '',
@@ -109,10 +112,9 @@ function lwm_install_templates(?array $names = null)
     $missing = [];
     foreach ($names as $name) {
         $tpl = $all[$name];
-        $message = lwm_build_body($tpl['fichier']);
         $rows = Capsule::table('tblemailtemplates')
             ->where('name', $name)
-            ->whereIn('language', LWM_TEMPLATE_LANGUAGES)
+            ->whereIn('language', array_keys(LWM_TEMPLATE_LANGUAGES))
             ->get();
         if (count($rows) === 0) {
             $missing[] = $name;
@@ -130,9 +132,10 @@ function lwm_install_templates(?array $names = null)
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
             }
+            $lang = LWM_TEMPLATE_LANGUAGES[$row->language];
             Capsule::table('tblemailtemplates')->where('id', $row->id)->update([
-                'subject' => $tpl['sujet'],
-                'message' => $message,
+                'subject' => lwm_subject($tpl, $lang),
+                'message' => lwm_build_body($tpl['fichier'], null, $lang),
                 'plaintext' => 0,
             ]);
         }
@@ -190,9 +193,9 @@ function lwm_refresh_installed()
 }
 
 /** Envoie un e-mail de test (données fictives) avec la configuration d'envoi de WHMCS. */
-function lwm_send_test($to, $slug, $templateName)
+function lwm_send_test($to, $slug, $templateName, $lang = 'fr', array $opts = [])
 {
-    list($subject, $html) = lwm_render_preview($slug, $templateName);
+    list($subject, $html) = lwm_render_preview($slug, $templateName, null, $lang, $opts);
     $subject = '[TEST] ' . $subject;
     $fromEmail = lwm_get_setting('SystemEmailsFromEmail') ?: lwm_get_setting('Email');
     $fromName = html_entity_decode(lwm_get_setting('SystemEmailsFromName') ?: lwm_get_setting('CompanyName'), ENT_QUOTES, 'UTF-8');
@@ -263,7 +266,7 @@ function lwm_harmonize_html($html)
 function lwm_other_templates()
 {
     return Capsule::table('tblemailtemplates')
-        ->where('language', '')
+        ->whereIn('language', array_keys(LWM_TEMPLATE_LANGUAGES))
         ->whereNotIn('type', ['admin'])
         ->whereNotIn('name', array_keys(lwm_templates()))
         ->where('plaintext', 0)
@@ -299,7 +302,65 @@ function lwm_restore_others()
 {
     $names = [];
     foreach (lwm_other_templates() as $row) {
-        $names[] = $row->name;
+        $names[$row->name] = true;
     }
-    return $names ? lwm_restore_templates($names) : [];
+    return $names ? lwm_restore_templates(array_keys($names)) : [];
+}
+
+/** Enregistre le sujet et le texte d'aperçu personnalisés d'un modèle (vide = texte par défaut). */
+function lwm_save_overrides($templateName, array $input)
+{
+    $tpl = lwm_templates()[$templateName];
+    foreach (['fr', 'en'] as $lang) {
+        foreach (['subject', 'pre'] as $kind) {
+            $value = trim((string) ($input[$kind . '_' . $lang] ?? ''));
+            $value = preg_replace('/[\r\n]+/', ' ', $value);
+            lwm_set_module_setting(lwm_override_key($kind, $tpl['fichier'], $lang), $value);
+        }
+    }
+    lwm_overrides(true);
+    $status = lwm_templates_status()[$templateName];
+    if ($status['installed'] || $status['en_installed']) {
+        lwm_install_templates([$templateName]);
+        return true;
+    }
+    return false;
+}
+
+/** Configuration exportable : paramètres, sujets personnalisés et thème actif. */
+function lwm_export_config()
+{
+    return [
+        'module' => 'Lwb-emails',
+        'version' => lewebmax_emails_config()['version'],
+        'exported_at' => date('c'),
+        'theme' => lwm_active_theme(),
+        'settings' => lwm_settings(),
+        'overrides' => lwm_overrides(),
+    ];
+}
+
+/** Importe une configuration exportée ; retourne la liste des erreurs. */
+function lwm_import_config($json, $applyTheme = true)
+{
+    $data = json_decode((string) $json, true);
+    if (!is_array($data) || !isset($data['settings']) || !is_array($data['settings'])) {
+        return ['Fichier invalide : ce n\'est pas un export Lwb-emails.'];
+    }
+    $input = array_intersect_key($data['settings'], lwm_fields()) + lwm_settings();
+    $errors = lwm_save_settings($input);
+    if ($errors) {
+        return $errors;
+    }
+    foreach ((array) ($data['overrides'] ?? []) as $key => $value) {
+        if (preg_match('/^ov_(subject|pre)_[a-z0-9-]+_(fr|en)$/', (string) $key)) {
+            lwm_set_module_setting($key, preg_replace('/[\r\n]+/', ' ', (string) $value));
+        }
+    }
+    lwm_overrides(true);
+    if ($applyTheme && !empty($data['theme']) && isset(lwm_themes()[$data['theme']])) {
+        lwm_apply_theme($data['theme']);
+    }
+    lwm_refresh_installed();
+    return [];
 }

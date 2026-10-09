@@ -1,9 +1,10 @@
-<!-- LEWEBMAX — Template WHMCS : « Credit Card Payment Due »
-     Sujet : Paiement à effectuer - Facture n° {$invoice_num}
-     Coller dans l'éditeur du template (mode HTML / code source). -->
+<!-- LEWEBMAX — Template WHMCS : « Credit Card Payment Due » (fr)
+     Sujet : Paiement à effectuer - Facture n° {$invoice_num} -->
 <div class="lwm-preheader" data-lwm="paiement-a-effectuer" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Le paiement de la facture n° {$invoice_num} est attendu pour le {$invoice_date_due}.</div>
 
 <p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Paiement à effectuer</p>
+
+{$lwm_due_badge}
 
 <h1 class="lwm-h1" style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:26px;line-height:34px;font-weight:800;color:#0d0d2b;">Votre paiement est attendu</h1>
 
@@ -62,4 +63,4 @@
 
 <p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:13px;line-height:20px;color:#8a8ea8;">Depuis votre espace client, vous pouvez aussi enregistrer un moyen de paiement pour les prochaines factures.</p>
 
-<p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Cordialement,<br>{if $signature}{$signature}{else}<strong style="color:#0d0d2b;">L&rsquo;équipe {$company_name}</strong>{/if}</p>
+%%signature%%

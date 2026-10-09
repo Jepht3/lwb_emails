@@ -3,6 +3,8 @@
  * Lwb-emails — construction des thèmes et des modèles à partir des paramètres.
  */
 
+use WHMCS\Database\Capsule;
+
 if (!defined('WHMCS')) {
     die('Accès direct interdit.');
 }
@@ -126,6 +128,24 @@ function lwm_social_html(array $s, $onDark, $align)
         . '><tr>' . $cells . '</tr></table>';
 }
 
+/**
+ * Texte bilingue évalué par WHMCS au moment de l'envoi : anglais si la langue du client est « english ».
+ * $fr et $en doivent déjà être échappés.
+ */
+function lwm_i18n($fr, $en)
+{
+    if ($en === '' || $en === $fr) {
+        return $fr;
+    }
+    return '{if $client_language=="english"}' . $en . '{else}' . $fr . '{/if}';
+}
+
+/** Réglage texte bilingue (clé et clé_en), échappé. */
+function lwm_ti(array $s, $key)
+{
+    return lwm_i18n(lwm_e($s[$key]), isset($s[$key . '_en']) ? lwm_e($s[$key . '_en']) : '');
+}
+
 function lwm_promo_html(array $s)
 {
     if (!$s['promo_enabled'] || ($s['promo_text'] === '' && $s['promo_title'] === '')) {
@@ -136,13 +156,92 @@ function lwm_promo_html(array $s)
         $button = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0 0 0;"><tr>'
             . '<td bgcolor="#ff6a3d" style="background-color:#ff6a3d;border-radius:10px;">'
             . '<a href="' . lwm_e($s['promo_url']) . '" target="_blank" style="display:inline-block;padding:11px 20px;font-family:' . LWM_FONT . ';font-size:14px;line-height:18px;font-weight:700;color:#ffffff;text-decoration:none;">'
-            . lwm_e($s['promo_button'] ?: 'En profiter') . '&nbsp;&rarr;</a></td></tr></table>';
+            . lwm_i18n(lwm_e($s['promo_button'] ?: 'En profiter'), lwm_e($s['promo_button_en'])) . '&nbsp;&rarr;</a></td></tr></table>';
     }
+    $text = lwm_i18n(nl2br(lwm_e($s['promo_text'])), $s['promo_text_en'] !== '' ? nl2br(lwm_e($s['promo_text_en'])) : '');
     return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fff7f3" style="background-color:#fff7f3;border:1px dashed #ff6a3d;border-radius:12px;margin:28px 0 0 0;">'
         . '<tr><td style="padding:18px 22px;font-family:' . LWM_FONT . ';">'
-        . '<p style="margin:0 0 4px 0;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#ff6a3d;">' . lwm_e($s['promo_title']) . '</p>'
-        . '<p style="margin:0;font-size:14px;line-height:22px;color:#0d0d2b;">' . nl2br(lwm_e($s['promo_text'])) . '</p>'
+        . '<p style="margin:0 0 4px 0;font-size:11px;line-height:16px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#ff6a3d;">' . lwm_ti($s, 'promo_title') . '</p>'
+        . '<p style="margin:0;font-size:14px;line-height:22px;color:#0d0d2b;">' . $text . '</p>'
         . $button . '</td></tr></table>';
+}
+
+/** Signature selon le service (facturation, support, commercial) et la langue du modèle. */
+function lwm_signature_html(array $s, $service, $lang)
+{
+    $regards = $lang === 'en' ? 'Kind regards,' : 'Cordialement,';
+    $p = '<p style="margin:0 0 16px 0;font-family:' . LWM_FONT . ';font-size:15px;line-height:24px;color:#575b78;">';
+    if (!$s['sig_enabled'] || !in_array($service, ['facturation', 'support', 'commercial'], true)) {
+        $team = $lang === 'en' ? 'The {$company_name} team' : 'L&rsquo;équipe {$company_name}';
+        return $p . $regards . '<br>{if $signature}{$signature}{else}<strong style="color:#0d0d2b;">' . $team . '</strong>{/if}</p>';
+    }
+    $title = $s['sig_' . $service . '_title' . ($lang === 'en' ? '_en' : '')] ?: $s['sig_' . $service . '_title'];
+    $name = $s['sig_' . $service . '_name'];
+    $photo = $s['sig_' . $service . '_photo'];
+    $lines = ($name !== '' ? '<strong style="color:#0d0d2b;">' . lwm_e($name) . '</strong><br>' . lwm_e($title) : '<strong style="color:#0d0d2b;">' . lwm_e($title) . '</strong>')
+        . '<br><span style="color:#8a8ea8;font-size:13px;">' . lwm_e($s['company']) . '</span>';
+    $img = $photo !== ''
+        ? '<td valign="middle" style="padding:0 14px 0 0;"><img src="' . lwm_e($photo) . '" width="48" height="48" alt="" style="display:block;width:48px;height:48px;border-radius:24px;border:0;"></td>'
+        : '<td valign="middle" style="padding:0 14px 0 0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td width="4" height="44" bgcolor="#ff6a3d" style="background-color:#ff6a3d;width:4px;height:44px;border-radius:2px;font-size:0;line-height:0;">&nbsp;</td></tr></table></td>';
+    return $p . $regards . '</p>'
+        . '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;"><tr>' . $img
+        . '<td valign="middle" style="font-family:' . LWM_FONT . ';font-size:14px;line-height:20px;color:#575b78;">' . $lines . '</td></tr></table>';
+}
+
+/** Badge d'échéance : « Échéance dans 3 jours », « En retard de 5 jours »… */
+function lwm_due_badge_html($days, $lang)
+{
+    $days = (int) $days;
+    $en = $lang === 'en';
+    if ($days > 3) {
+        list($bg, $fg) = ['#eef0fb', '#030673'];
+        $text = $en ? "Due in $days days" : "Échéance dans $days jours";
+    } elseif ($days > 0) {
+        list($bg, $fg) = ['#fff1ec', '#c2410c'];
+        $text = $en ? ($days === 1 ? 'Due tomorrow' : "Due in $days days") : ($days === 1 ? 'Échéance demain' : "Échéance dans $days jours");
+    } elseif ($days === 0) {
+        list($bg, $fg) = ['#fff1ec', '#c2410c'];
+        $text = $en ? 'Due today' : 'Échéance aujourd&rsquo;hui';
+    } else {
+        $late = -$days;
+        list($bg, $fg) = ['#fdeeee', '#b42318'];
+        $text = $en ? ($late === 1 ? '1 day overdue' : "$late days overdue") : ($late === 1 ? 'En retard d&rsquo;1 jour' : "En retard de $late jours");
+    }
+    return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 12px 0;"><tr>'
+        . '<td bgcolor="' . $bg . '" style="background-color:' . $bg . ';border-radius:999px;padding:6px 14px;font-family:' . LWM_FONT . ';font-size:13px;line-height:18px;font-weight:800;color:' . $fg . ';">'
+        . '&#9201;&nbsp; ' . $text . '</td></tr></table>';
+}
+
+/** Encadré d'incident (données du module lwb_statut). */
+function lwm_incident_html(array $incidents, $lang, array $s)
+{
+    if (!$incidents) {
+        return '';
+    }
+    $en = $lang === 'en';
+    $rows = '';
+    foreach ($incidents as $inc) {
+        $maint = !empty($inc['maintenance']);
+        $when = '';
+        if ($maint && !empty($inc['scheduled_for'])) {
+            $when = ' &middot; ' . lwm_e($inc['scheduled_for']) . (!empty($inc['scheduled_until']) ? ' &rarr; ' . lwm_e($inc['scheduled_until']) : '');
+        }
+        $last = !empty($inc['updates']) ? end($inc['updates']) : null;
+        $rows .= '<p style="margin:0 0 4px 0;font-family:' . LWM_FONT . ';font-size:14px;line-height:21px;font-weight:800;color:#0d0d2b;">' . lwm_e($inc['title']) . '</p>'
+            . '<p style="margin:0 0 10px 0;font-family:' . LWM_FONT . ';font-size:13px;line-height:20px;color:#575b78;">' . lwm_e($inc['status_label'] ?? '') . $when
+            . ($last && !empty($last['message']) ? '<br>' . lwm_e($last['message']) : '') . '</p>';
+    }
+    $anyIncident = (bool) array_filter($incidents, function ($i) { return empty($i['maintenance']); });
+    $label = $anyIncident ? ($en ? 'Ongoing incident' : 'Incident en cours') : ($en ? 'Scheduled maintenance' : 'Maintenance planifiée');
+    $color = $anyIncident ? '#b42318' : '#030673';
+    $bg = $anyIncident ? '#fdeeee' : '#eef0fb';
+    $link = $s['incident_url'] !== ''
+        ? '<a href="' . lwm_e($s['incident_url']) . '" target="_blank" style="font-family:' . LWM_FONT . ';font-size:13px;font-weight:700;color:' . $color . ';text-decoration:none;">' . ($en ? 'Follow the service status' : 'Suivre l&rsquo;état des services') . '&nbsp;&rarr;</a>'
+        : '';
+    return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' . $bg . '" style="background-color:' . $bg . ';border-left:4px solid ' . $color . ';border-radius:8px;margin:0 0 26px 0;">'
+        . '<tr><td style="padding:14px 18px;">'
+        . '<p style="margin:0 0 8px 0;font-family:' . LWM_FONT . ';font-size:11px;line-height:16px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:' . $color . ';">&#9679;&nbsp; ' . $label . '</p>'
+        . $rows . $link . '</td></tr></table>';
 }
 
 function lwm_doc_start(array $s, $bg)
@@ -194,7 +293,7 @@ function lwm_placeholders(array $s)
     $client = lwm_trailing_slash($s['client_url']);
     return [
         '%%company%%' => lwm_e($s['company']),
-        '%%tagline%%' => lwm_e($s['tagline']),
+        '%%tagline%%' => lwm_ti($s, 'tagline'),
         '%%site_url%%' => lwm_e($s['site_url']),
         '%%site_label%%' => lwm_e(lwm_host($s['site_url'])),
         '%%client_url%%' => lwm_e($client),
@@ -205,14 +304,25 @@ function lwm_placeholders(array $s)
         '%%address%%' => lwm_e($s['address']),
         '%%cpanel_url%%' => lwm_e($s['cpanel_url']),
         '%%cpanel_label%%' => lwm_e(lwm_host($s['cpanel_url'], true)),
-        '%%payments%%' => lwm_e($s['payments']),
+        '%%payments%%' => lwm_ti($s, 'payments'),
+        '%%legal%%' => lwm_ti($s, 'legal'),
+        '%%hero_text%%' => lwm_ti($s, 'hero_text'),
+        '%%hero_accent%%' => lwm_ti($s, 'hero_accent'),
+        '%%hero_badge%%' => lwm_ti($s, 'hero_badge'),
+        // Modèles : une version par langue, donc pas de bascule à l'envoi.
         '%%payments_long%%' => lwm_e($s['payments_long']),
+        '%%payments_long_en%%' => lwm_e($s['payments_long_en'] ?: $s['payments_long']),
         '%%offer_line%%' => lwm_e($s['offer_line']),
-        '%%legal%%' => lwm_e($s['legal']),
-        '%%hero_text%%' => lwm_e($s['hero_text']),
-        '%%hero_accent%%' => lwm_e($s['hero_accent']),
-        '%%hero_badge%%' => lwm_e($s['hero_badge']),
+        '%%offer_line_en%%' => lwm_e($s['offer_line_en'] ?: $s['offer_line']),
     ];
+}
+
+/** Remplace les %%i18n:français|anglais%% des fichiers de thème. */
+function lwm_apply_i18n($html)
+{
+    return preg_replace_callback('/%%i18n:([^|]*?)\|(.*?)%%/', function ($m) {
+        return lwm_i18n($m[1], $m[2]);
+    }, $html);
 }
 
 /** Construit le CSS, l'en-tête et le pied de page d'un thème (HTML brut, non encodé). */
@@ -239,17 +349,62 @@ function lwm_build_theme($slug, ?array $s = null)
     ];
     return [
         'EmailCSS' => $css,
-        'EmailGlobalHeader' => strtr(lwm_strip_doc_comment(file_get_contents($dir . '/header.html')), $map),
-        'EmailGlobalFooter' => strtr(lwm_strip_doc_comment(file_get_contents($dir . '/footer.html')), $map),
+        'EmailGlobalHeader' => strtr(lwm_apply_i18n(lwm_strip_doc_comment(file_get_contents($dir . '/header.html'))), $map),
+        'EmailGlobalFooter' => strtr(lwm_apply_i18n(lwm_strip_doc_comment(file_get_contents($dir . '/footer.html'))), $map),
     ];
 }
 
+/** Sujets et textes d'aperçu personnalisés depuis le module (clé ov_<type>_<fichier>_<langue>). */
+function lwm_overrides($reload = false)
+{
+    static $cache = null;
+    if ($cache === null || $reload) {
+        $cache = [];
+        foreach (Capsule::table('tbladdonmodules')->where('module', LWM_MODULE)->pluck('value', 'setting')->all() as $k => $v) {
+            if (strpos($k, 'ov_') === 0 && $v !== '') {
+                $cache[$k] = (string) $v;
+            }
+        }
+    }
+    return $cache;
+}
+
+function lwm_override_key($kind, $file, $lang)
+{
+    return 'ov_' . $kind . '_' . preg_replace('/\.html$/', '', $file) . '_' . $lang;
+}
+
+/** Sujet du modèle dans la langue demandée (personnalisé ou par défaut). */
+function lwm_subject(array $tpl, $lang)
+{
+    $ov = lwm_overrides();
+    $key = lwm_override_key('subject', $tpl['fichier'], $lang);
+    if (isset($ov[$key])) {
+        return $ov[$key];
+    }
+    return $lang === 'en' ? $tpl['sujet_en'] : $tpl['sujet'];
+}
+
 /** Corps d'un modèle prêt à enregistrer dans WHMCS (variables Smarty conservées). */
-function lwm_build_body($file, ?array $s = null)
+function lwm_build_body($file, ?array $s = null, $lang = 'fr')
 {
     $s = $s ?: lwm_settings();
-    $html = lwm_strip_doc_comment(file_get_contents(lwm_path('templates/' . $file)));
-    return strtr($html, lwm_placeholders($s));
+    $path = lwm_path('templates/' . ($lang === 'en' ? 'en/' : '') . $file);
+    $html = lwm_strip_doc_comment(file_get_contents($path));
+    $tpl = null;
+    foreach (lwm_templates() as $t) {
+        if ($t['fichier'] === $file) {
+            $tpl = $t;
+        }
+    }
+    $map = lwm_placeholders($s) + ['%%signature%%' => lwm_signature_html($s, $tpl ? $tpl['service'] : '', $lang)];
+    $html = strtr($html, $map);
+    $ov = lwm_overrides();
+    $key = lwm_override_key('pre', $file, $lang);
+    if (isset($ov[$key])) {
+        $html = preg_replace('/(<div class="lwm-preheader"[^>]*>).*?(<\/div>)/s', '${1}' . str_replace(['\\', '$'], ['\\\\', '\\$'], lwm_e($ov[$key])) . '${2}', $html, 1);
+    }
+    return $html;
 }
 
 /** Données fictives pour les aperçus et les e-mails de test. */
@@ -318,9 +473,11 @@ function lwm_sample_data()
 function lwm_render_sample($html, array $data)
 {
     $html = preg_replace_callback(
-        '/\{if (?:isset\()?\$([a-z0-9_]+)\)?\}(.*?)(?:\{else\}(.*?))?\{\/if\}/s',
+        '/\{if (?:isset\()?\$([a-z0-9_]+)\)?(?:\s*==\s*"([^"]*)")?\}(.*?)(?:\{else\}(.*?))?\{\/if\}/s',
         function ($m) use ($data) {
-            return !empty($data[$m[1]]) ? $m[2] : (isset($m[3]) ? $m[3] : '');
+            $value = isset($data[$m[1]]) ? $data[$m[1]] : '';
+            $true = $m[2] !== '' ? $value === $m[2] : !empty($value);
+            return $true ? $m[3] : (isset($m[4]) ? $m[4] : '');
         },
         $html
     );
@@ -330,14 +487,25 @@ function lwm_render_sample($html, array $data)
 }
 
 /** E-mail complet (thème + modèle) avec données fictives : [sujet, html]. */
-function lwm_render_preview($slug, $templateName, ?array $s = null)
+function lwm_render_preview($slug, $templateName, ?array $s = null, $lang = 'fr', array $opts = [])
 {
     $s = $s ?: lwm_settings();
     $tpl = lwm_templates()[$templateName];
     $theme = lwm_build_theme($slug, $s);
-    $html = str_replace('[EmailCSS]', $theme['EmailCSS'], $theme['EmailGlobalHeader'])
-        . lwm_build_body($tpl['fichier'], $s)
-        . $theme['EmailGlobalFooter'];
+    $body = lwm_build_body($tpl['fichier'], $s, $lang);
     $data = lwm_sample_data();
-    return [lwm_render_sample($tpl['sujet'], $data), lwm_render_sample($html, $data)];
+    $data['client_language'] = $lang === 'en' ? 'english' : 'french';
+    if ($s['countdown_enabled'] && strpos($body, '{$lwm_due_badge}') !== false) {
+        $data['lwm_due_badge'] = lwm_due_badge_html(isset($opts['days']) ? (int) $opts['days'] : 3, $lang);
+    }
+    if (!empty($opts['incident'])) {
+        $data['lwm_incident'] = lwm_incident_html([[
+            'title' => $lang === 'en' ? 'Slow email delivery' : 'Lenteurs sur la messagerie',
+            'status_label' => $lang === 'en' ? 'Identified' : 'Cause identifiée',
+            'maintenance' => false,
+            'updates' => [['message' => $lang === 'en' ? 'Our teams are working on it.' : 'Nos équipes interviennent, retour à la normale prévu sous 1 heure.']],
+        ]], $lang, $s);
+    }
+    $html = str_replace('[EmailCSS]', $theme['EmailCSS'], $theme['EmailGlobalHeader']) . $body . $theme['EmailGlobalFooter'];
+    return [lwm_render_sample(lwm_subject($tpl, $lang), $data), lwm_render_sample($html, $data)];
 }

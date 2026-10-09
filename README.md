@@ -31,7 +31,7 @@ Le dossier `assets/` contient une copie des logos : bleu, blanc (pour fond sombr
 
 Les boutons, tableaux d'informations, étiquettes et encadrés d'alerte sont identiques dans les 5 thèmes. Seuls l'en-tête, le pied de page et le cadre changent.
 
-## Fonctionnalités du module (v2)
+## Fonctionnalités du module (v2.2)
 
 Le module ajoute la page **Modules complémentaires > Lwb-emails**, organisée en 5 onglets :
 
@@ -41,7 +41,18 @@ Le module ajoute la page **Modules complémentaires > Lwb-emails**, organisée e
 | **Personnalisation** | Logos jour (bleu) et nuit (blanc), site, espace client, e-mail, téléphone, WhatsApp, adresse, cPanel, réseaux sociaux (Facebook, Instagram, WhatsApp, LinkedIn, X, TikTok, YouTube, Telegram), style des icônes, textes (moyens de paiement, mention légale, accroche), bannière promotionnelle, mode nuit. **À l'enregistrement, le thème actif et les modèles installés sont régénérés automatiquement.** |
 | **Modèles** | État des 22 modèles dédiés (LEWEBMAX ou d'origine) ; installation ou restauration sélective. Bouton **« Harmoniser les autres modèles »** : les autres modèles clients de WHMCS (transferts, SSL, devis, remboursements…) gardent leur texte mais reçoivent la typographie et les couleurs LEWEBMAX, avec sauvegarde. |
 | **Aperçu & test** | N'importe quel modèle dans n'importe quel thème, en version ordinateur ou mobile ; envoi d'un e-mail de test via la configuration d'envoi de WHMCS. |
-| **Sauvegardes** | Liste des éléments sauvegardés ; restauration de l'en-tête et du pied, des modèles, ou de tout. |
+| **Sauvegardes & export** | Export et import de la configuration (fichier JSON : paramètres, sujets personnalisés, thème) ; liste des sauvegardes ; restauration de l'en-tête et du pied, des modèles, ou de tout. |
+
+**Nouveautés v2.2** :
+
+- **Badge d'échéance** dans les factures impayées : « Échéance dans 3 jours », « Échéance aujourd'hui », « En retard de 5 jours ». Il est calculé à l'envoi par `hooks.php` (variable `{$lwm_due_badge}`).
+- **Signatures par service** : Facturation (factures, renouvellements, suspensions), Support (tickets, hébergement, services), Commercial (bienvenue, commandes, domaines, promotions), avec titre, nom de l'agent et photo facultatifs.
+- **Sujets et textes d'aperçu modifiables** depuis l'onglet Modèles (bouton « Modifier »), en français et en anglais, avec la liste des variables disponibles.
+- **Export / import** de la configuration.
+- **Bandeau d'incident** relié au module `lwb_statut` : un encadré « Incident en cours » ou « Maintenance planifiée » s'ajoute en haut de tous les e-mails clients tant qu'un incident est ouvert (variable `{$lwm_incident}`).
+- **Version anglaise** des 22 modèles, installée dans la traduction « english » de WHMCS. L'en-tête et le pied passent en anglais automatiquement pour les clients dont la langue est « english » (`{$client_language}`).
+
+> Le badge et le bandeau d'incident dépendent de `hooks.php`. WHMCS ne charge les hooks d'un module que s'il figure dans le réglage `AddonModulesHooks`. Ce réglage est mis à jour quand on active le module depuis **Configuration > Modules complémentaires** ; après une mise à jour manuelle, désactivez puis réactivez le module (les réglages et sauvegardes sont conservés).
 
 **Icônes des réseaux sociaux** : PNG en 3 jeux, dans `assets/icons/` : `bleu` (fond clair), `blanc` (fond sombre) et `couleur` (couleurs officielles). Les clients e-mail n'affichent ni SVG ni polices d'icônes. Les PNG doivent être publiés dans un dossier public, par défaut `https://lewebmax.com/wp-content/uploads/lwm-email/icons/`, réglable dans Personnalisation.
 
@@ -60,7 +71,8 @@ whmcs/modules/addons/lewebmax_emails/   Module WHMCS (à copier tel quel sur le 
   lib/admin.php                         Interface d'administration (onglets)
   themes/<thème>/                       email.css, header.html, footer.html (avec des %%paramètres%%)
   themes.json                           Liste et description des thèmes
-  templates/                            Corps des 22 e-mails dédiés (communs aux 5 thèmes)
+  templates/                            Corps des 22 e-mails dédiés en français (templates/en/ : en anglais)
+  hooks.php                             Badge d'échéance et bandeau d'incident, calculés à l'envoi
   templates.json                        Correspondance fichier ↔ template WHMCS ↔ sujet
   assets/icons/                         Icônes des réseaux sociaux (PNG)
 dist/lewebmax_emails.zip                Le module zippé, prêt à téléverser

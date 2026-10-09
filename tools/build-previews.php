@@ -12,6 +12,7 @@ namespace WHMCS\Database {
         public function where() { return $this; }
         public function pluck() { return $this; }
         public function all() { return []; }
+        public function value() { return null; }
     }
     class Capsule
     {
@@ -27,17 +28,19 @@ namespace {
 
     $root = dirname(__DIR__);
     $out = $root . '/previews';
-    foreach (glob($out . '/*/*.html') ?: [] as $old) {
+    foreach (array_merge(glob($out . '/*/*.html') ?: [], glob($out . '/*/en/*.html') ?: []) as $old) {
         unlink($old);
     }
     $sections = [];
     foreach (lwm_themes() as $slug => $theme) {
-        @mkdir($out . '/' . $slug, 0777, true);
+        @mkdir($out . '/' . $slug . '/en', 0777, true);
         $links = [];
         foreach (lwm_templates() as $name => $tpl) {
             list($subject, $html) = lwm_render_preview($slug, $name);
             file_put_contents("$out/$slug/{$tpl['fichier']}", $html);
-            $links[] = '<li><a href="' . $slug . '/' . $tpl['fichier'] . '">' . htmlspecialchars($subject) . '</a> <small>(' . $name . ')</small></li>';
+            list(, $htmlEn) = lwm_render_preview($slug, $name, null, 'en');
+            file_put_contents("$out/$slug/en/{$tpl['fichier']}", $htmlEn);
+            $links[] = '<li><a href="' . $slug . '/' . $tpl['fichier'] . '">' . htmlspecialchars($subject) . '</a> &middot; <a href="' . $slug . '/en/' . $tpl['fichier'] . '">EN</a> <small>(' . $name . ')</small></li>';
         }
         $sections[] = '<h2>' . $theme['nom'] . '</h2><p>' . htmlspecialchars($theme['description']) . '</p><ul style="line-height:1.9">' . implode("\n", $links) . '</ul>';
     }
