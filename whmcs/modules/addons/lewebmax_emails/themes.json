@@ -1,7 +1,32 @@
 [
-  { "slug": "classique", "nom": "Classique", "description": "En-tête blanc avec logo, liseré bleu et orange, carte blanche sur fond gris clair. Fidèle au site lewebmax.com." },
-  { "slug": "prestige", "nom": "Prestige", "description": "Bandeau et pied de page bleu nuit, logo dans un cartouche blanc, bouton WhatsApp orange. Fidèle à l'espace client." },
-  { "slug": "epure", "nom": "Épuré", "description": "Fond tout blanc, logo centré, filets fins. Sobre et élégant, idéal pour les e-mails transactionnels." },
-  { "slug": "moderne", "nom": "Moderne", "description": "Grand bandeau en dégradé bleu avec accroche, pied de page sombre en trois colonnes. Inspiré de la page d'accueil." },
-  { "slug": "corporate", "nom": "Corporate", "description": "Style lettre officielle : filet bleu, coordonnées en en-tête, pied de page contact en deux colonnes." }
+  {
+    "slug": "classique",
+    "nom": "Classique",
+    "description": "En-tête blanc avec logo, liseré bleu et orange, carte blanche sur fond gris clair. Fidèle au site lewebmax.com.",
+    "bg": "#f4f5fb"
+  },
+  {
+    "slug": "prestige",
+    "nom": "Prestige",
+    "description": "Bandeau et pied de page bleu nuit avec le logo blanc, bouton WhatsApp orange. Fidèle à l'espace client.",
+    "bg": "#f4f5fb"
+  },
+  {
+    "slug": "epure",
+    "nom": "Épuré",
+    "description": "Fond tout blanc, logo centré, filets fins. Sobre et élégant, idéal pour les e-mails transactionnels.",
+    "bg": "#ffffff"
+  },
+  {
+    "slug": "moderne",
+    "nom": "Moderne",
+    "description": "Grand bandeau en dégradé bleu avec le logo blanc et une accroche, pied de page sombre en trois colonnes.",
+    "bg": "#eef0fb"
+  },
+  {
+    "slug": "corporate",
+    "nom": "Corporate",
+    "description": "Style lettre officielle : filet bleu, coordonnées en en-tête, pied de page contact en deux colonnes.",
+    "bg": "#f4f5fb"
+  }
 ]

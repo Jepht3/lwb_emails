@@ -31,35 +31,53 @@ Le dossier `assets/` contient une copie des logos : bleu, blanc (pour fond sombr
 
 Les boutons, tableaux d'informations, étiquettes et encadrés d'alerte sont identiques dans les 5 thèmes. Seuls l'en-tête, le pied de page et le cadre changent.
 
+## Fonctionnalités du module (v2)
+
+Le module ajoute la page **Modules complémentaires > LEWEBMAX E-mails**, organisée en 5 onglets :
+
+| Onglet | Rôle |
+|---|---|
+| **Thèmes** | Aperçu des 5 designs avec vos paramètres ; application en un clic. |
+| **Personnalisation** | Logos jour (bleu) et nuit (blanc), site, espace client, e-mail, téléphone, WhatsApp, adresse, cPanel, réseaux sociaux (Facebook, Instagram, WhatsApp, LinkedIn, X, TikTok, YouTube, Telegram), style des icônes, textes (moyens de paiement, mention légale, accroche), bannière promotionnelle, mode nuit. **À l'enregistrement, le thème actif et les modèles installés sont régénérés automatiquement.** |
+| **Modèles** | État des 12 modèles (LEWEBMAX ou d'origine) ; installation ou restauration sélective. |
+| **Aperçu & test** | N'importe quel modèle dans n'importe quel thème, en version ordinateur ou mobile ; envoi d'un e-mail de test via la configuration d'envoi de WHMCS. |
+| **Sauvegardes** | Liste des éléments sauvegardés ; restauration de l'en-tête et du pied, des modèles, ou de tout. |
+
+**Icônes des réseaux sociaux** : PNG en 3 jeux, dans `assets/icons/` : `bleu` (fond clair), `blanc` (fond sombre) et `couleur` (couleurs officielles). Les clients e-mail n'affichent ni SVG ni polices d'icônes. Les PNG doivent être publiés dans un dossier public, par défaut `https://lewebmax.com/wp-content/uploads/lwm-email/icons/`, réglable dans Personnalisation.
+
+**Mode nuit** : sur les thèmes clairs, le logo bleu est remplacé par le logo blanc et les couleurs passent en sombre dans Apple Mail, iOS et Outlook. Gmail ignore ce réglage et applique sa propre inversion. Les thèmes Prestige et Moderne affichent directement le logo blanc sur le bandeau bleu.
+
 ## Contenu
 
 ```
 whmcs/modules/addons/lewebmax_emails/   Module WHMCS (à copier tel quel sur le serveur)
-  lewebmax_emails.php                   Page d'administration : choix du thème, installation, restauration
-  themes/<thème>/                       email.css, header.html, footer.html de chaque thème
+  lewebmax_emails.php                   Point d'entrée du module
+  lib/settings.php                      Paramètres modifiables (valeurs par défaut, validation)
+  lib/render.php                        Construction des thèmes et modèles, aperçus
+  lib/actions.php                       Thème, modèles, sauvegardes, e-mail de test
+  lib/admin.php                         Interface d'administration (onglets)
+  themes/<thème>/                       email.css, header.html, footer.html (avec des %%paramètres%%)
   themes.json                           Liste et description des thèmes
   templates/                            Corps des 12 e-mails (communs aux 5 thèmes)
   templates.json                        Correspondance fichier ↔ template WHMCS ↔ sujet
+  assets/icons/                         Icônes des réseaux sociaux (PNG)
 dist/lewebmax_emails.zip                Le module zippé, prêt à téléverser
 standalone/annonce.html                 E-mail complet et autonome (promo, annonce, newsletter)
 previews/                               Aperçus avec données fictives : ouvrez previews/index.html
-tools/build-previews.js                 Regénère les aperçus
+tools/build-previews.php                Regénère les aperçus (php tools/build-previews.php)
 assets/                                 Logos (bleu, blanc, icône)
 ```
 
 ## Installation dans WHMCS (avec le module, recommandé)
 
 1. Téléversez le dossier `lewebmax_emails` (ou décompressez `dist/lewebmax_emails.zip`) dans le dossier `modules/addons/` de votre WHMCS.
-2. Dans l'administration : **Configuration > Modules complémentaires** (Addon Modules), activez **LEWEBMAX E-mails** et donnez l'accès à votre rôle administrateur.
-3. Ouvrez **Modules complémentaires > LEWEBMAX E-mails** :
-   - cliquez sur **Utiliser ce thème** sous le design de votre choix (un aperçu de chaque thème est affiché) ;
-   - cliquez sur **Installer les 12 modèles** pour remplacer la version par défaut (français) des modèles. Les traductions, par exemple « english », ne sont pas modifiées ;
-   - **Restaurer les e-mails d'origine** remet les réglages et les modèles tels qu'ils étaient avant le module.
-4. Vérifiez dans **Configuration > Paramètres généraux > Courriel** que le type d'e-mail est **HTML**, puis envoyez-vous un e-mail test.
+2. Copiez le contenu de `assets/icons/` dans un dossier public (par défaut `wp-content/uploads/lwm-email/icons/` sur lewebmax.com).
+3. Dans l'administration : **Configuration > Modules complémentaires** (Addon Modules), activez **LEWEBMAX E-mails** et donnez l'accès à votre rôle administrateur.
+4. Ouvrez **Modules complémentaires > LEWEBMAX E-mails** : vérifiez l'onglet Personnalisation, choisissez un thème, installez les modèles, puis envoyez-vous un e-mail de test.
 
-Le module enregistre l'en-tête, le pied de page et le CSS globaux de WHMCS (`EmailGlobalHeader`, `EmailGlobalFooter`, `EmailCSS`), encodés comme le fait le formulaire de WHMCS. L'en-tête de chaque thème est un document HTML complet qui contient l'emplacement `[EmailCSS]`, comme celui d'origine de WHMCS. Pour changer de thème plus tard, il suffit de cliquer sur un autre.
+Le module enregistre l'en-tête, le pied de page et le CSS globaux de WHMCS (`EmailGlobalHeader`, `EmailGlobalFooter`, `EmailCSS`), encodés comme le fait le formulaire de WHMCS. Seule la version par défaut (français) des modèles est remplacée ; les traductions restent intactes.
 
-Les modèles utilisent les variables de my.lewebmax.com : `{$reset_password_url}`, `{$domain_renewal_url}`, `{$ticket_link}`, et le lien de paiement Mobile Money `{$flexpay_pay_link}` fourni par le hook FlexPay (factures créées, rappels et retards).
+Les modèles utilisent les variables de my.lewebmax.com : `{$reset_password_url}`, `{$domain_renewal_url}`, `{$ticket_link}` et le lien Mobile Money `{$flexpay_pay_link}` du hook FlexPay. Attention : dans WHMCS, `{$invoice_link}` et `{$ticket_link}` sont des liens HTML complets ; ils ne doivent jamais être placés dans un `href`. Les boutons de facture utilisent `viewinvoice.php?id={$invoice_id}`.
 
 ## Installation manuelle (sans module)
 
@@ -92,7 +110,7 @@ Les modèles utilisent les variables de my.lewebmax.com : `{$reset_password_url}
 Les blocs se répètent d'un modèle à l'autre (étiquette orange, titre, tableau d'informations, bouton). Pour en créer un nouveau, copiez un fichier existant et adaptez le texte.
 
 ```bash
-node tools/build-previews.js   # puis ouvrez previews/index.html
+php tools/build-previews.php   # puis ouvrez previews/index.html
 ```
 
 Pour ajouter un modèle, déclarez-le dans `templates.json` du module : il sera alors installé par le module et inclus dans les aperçus. Pensez à refaire le ZIP (`cd whmcs/modules/addons && zip -r ../../../dist/lewebmax_emails.zip lewebmax_emails`).

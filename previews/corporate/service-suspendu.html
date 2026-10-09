@@ -4,6 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
 <style type="text/css">
 /* LEWEBMAX — CSS du thème « corporate »
@@ -29,25 +31,42 @@ a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !im
   .lwm-center-mobile { text-align: center !important; }
 }
 
+/* Mode nuit */
+:root { color-scheme: light dark; supported-color-schemes: light dark; }
+@media (prefers-color-scheme: dark) {
+  body, .lwm-bg { background-color: #0b0b1f !important; }
+  .lwm-card, .lwm-surface, td[bgcolor="#ffffff"], table[bgcolor="#ffffff"] { background-color: #15152f !important; }
+  table[bgcolor="#f6f7fc"], td[bgcolor="#f6f7fc"], table[bgcolor="#eef0fb"] { background-color: #1d1d3d !important; border-color: #2c2c55 !important; }
+  table[bgcolor="#fff1ec"], table[bgcolor="#fff7f3"] { background-color: #2a1a14 !important; border-color: #5a3020 !important; }
+  table[bgcolor="#fdeeee"] { background-color: #2a1414 !important; }
+  table[bgcolor="#e7f9f0"] { background-color: #0f2a1f !important; }
+  .lwm-card p, .lwm-card td, .lwm-surface td { color: #c4c6e0 !important; }
+  .lwm-h1, .lwm-card [style*="color:#0d0d2b"], .lwm-surface [style*="color:#0d0d2b"], [style*="color:#0d0d2b"] { color: #ffffff !important; }
+  .lwm-card [style*="color:#030673"], .lwm-surface [style*="color:#030673"], a[style*="color:#030673"] { color: #a9adff !important; }
+  .lwm-card [style*="color:#7a2e14"] { color: #ffc2ad !important; }
+  .lwm-card [style*="color:#7a1010"] { color: #ffb4b4 !important; }
+  .lwm-card [style*="color:#05603a"] { color: #9ff0c8 !important; }
+  [style*="color:#575b78"] { color: #c4c6e0 !important; }
+  [style*="color:#8a8ea8"] { color: #9a9cbc !important; }
+  .lwm-chip { color: #ffffff !important; border-color: #2c2c55 !important; }
+  .lwm-logo-l { display: none !important; }
+  .lwm-logo-d { display: block !important; max-height: none !important; overflow: visible !important; }
+}
 </style>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f5fb;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f5fb" style="background-color:#f4f5fb;">
+<body class="lwm-bg" style="margin:0;padding:0;background-color:#f4f5fb;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f5fb" class="lwm-bg" style="background-color:#f4f5fb;">
   <tr>
     <td align="center" style="padding:28px 12px;">
       <table role="presentation" class="lwm-container" width="620" cellpadding="0" cellspacing="0" border="0" style="width:620px;max-width:620px;">
         <tr>
-          <td bgcolor="#ffffff" style="background-color:#ffffff;border:1px solid #e2e5f2;border-top:6px solid #030673;border-radius:6px;">
+          <td bgcolor="#ffffff" class="lwm-surface" style="background-color:#ffffff;border:1px solid #e2e5f2;border-top:6px solid #030673;border-radius:6px;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td class="lwm-pad" style="padding:28px 44px 22px 44px;border-bottom:1px solid #e2e5f2;">
                   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td align="left" valign="middle">
-                        <a href="https://lewebmax.com" target="_blank" style="text-decoration:none;">
-                          <img src="https://lewebmax.com/wp-content/uploads/2023/01/cropped-cropped-288x80-noir-1.png" width="160" height="40" alt="LEWEBMAX" style="display:block;width:160px;height:auto;border:0;color:#030673;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:20px;font-weight:800;">
-                        </a>
-                      </td>
+                      <td align="left" valign="middle"><a href="https://lewebmax.com" target="_blank" style="text-decoration:none;"><img src="https://lewebmax.com/wp-content/uploads/2023/01/cropped-cropped-288x80-noir-1.png" width="160" alt="LEWEBMAX" class="lwm-logo-l" style="display:block;width:160px;max-width:100%;height:auto;border:0;outline:none;color:#030673;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:20px;font-weight:800;"></a><!--[if !mso]><!--><div class="lwm-logo-d" style="display:none;max-height:0;overflow:hidden;"><a href="https://lewebmax.com" target="_blank" style="text-decoration:none;"><img src="https://lewebmax.com/wp-content/uploads/2023/01/288x80-blanc.png" width="160" alt="LEWEBMAX" style="display:block;width:160px;max-width:100%;height:auto;border:0;outline:none;color:#030673;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:20px;font-weight:800;"></a></div><!--<![endif]--></td>
                       <td align="right" valign="middle" class="lwm-hide-mobile" style="font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:18px;color:#8a8ea8;">
                         <strong style="color:#0d0d2b;">LEWEBMAX</strong><br>
                         Kinshasa, RDC<br>
@@ -59,7 +78,7 @@ a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !im
               </tr>
               <tr>
                 <td class="lwm-card" style="padding:38px 44px 34px 44px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">
-<div class="lwm-preheader" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Votre service Hébergement Pro a été suspendu. Voici comment le réactiver.</div>
+<div class="lwm-preheader" data-lwm="service-suspendu" style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Votre service Hébergement Pro a été suspendu. Voici comment le réactiver.</div>
 
 <p style="margin:0 0 10px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff6a3d;">Service suspendu</p>
 
@@ -111,7 +130,8 @@ a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !im
 </table>
 
 <p style="margin:0 0 16px 0;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#575b78;">Cordialement,<br><strong style="color:#0d0d2b;">L&rsquo;équipe LE WEB MAX</strong></p>
-</td>
+
+                </td>
               </tr>
               <tr>
                 <td bgcolor="#f6f7fc" class="lwm-pad" style="background-color:#f6f7fc;border-top:1px solid #e2e5f2;border-radius:0 0 6px 6px;padding:24px 44px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;">
@@ -119,7 +139,7 @@ a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !im
                     <tr>
                       <td class="lwm-col" width="50%" valign="top" style="font-size:13px;line-height:21px;color:#575b78;">
                         <strong style="color:#0d0d2b;">Service client 24/7</strong><br>
-                        <a href="https://wa.me/15672931610" target="_blank" style="color:#030673;text-decoration:none;font-weight:600;">WhatsApp&nbsp;: +1&nbsp;567&nbsp;293&nbsp;1610</a><br>
+                        <a href="https://wa.me/15672931610" target="_blank" style="color:#030673;text-decoration:none;font-weight:600;">WhatsApp&nbsp;: +1 567 293 1610</a><br>
                         <a href="mailto:info@lewebmax.com" style="color:#030673;text-decoration:none;font-weight:600;">info@lewebmax.com</a>
                       </td>
                       <td class="lwm-col" width="50%" align="right" valign="top" style="font-size:13px;line-height:21px;color:#575b78;">
@@ -135,10 +155,10 @@ a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !im
           </td>
         </tr>
         <tr>
-          <td align="center" class="lwm-pad" style="padding:20px 36px 6px 36px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:#8a8ea8;">
-            <a href="https://facebook.com/lewebmax" target="_blank" style="color:#575b78;text-decoration:none;font-weight:600;">Facebook</a>
-            &nbsp;&middot;&nbsp;
-            <a href="https://instagram.com/lewebmax" target="_blank" style="color:#575b78;text-decoration:none;font-weight:600;">Instagram</a><br>
+          <td align="center" style="padding:22px 0 0 0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td style="padding:0 5px;"><a href="https://facebook.com/lewebmax" target="_blank" style="text-decoration:none;"><img src="https://lewebmax.com/wp-content/uploads/lwm-email/icons/facebook-bleu.png" width="30" height="30" alt="Facebook" style="display:block;width:30px;height:30px;border:0;outline:none;"></a></td><td style="padding:0 5px;"><a href="https://instagram.com/lewebmax" target="_blank" style="text-decoration:none;"><img src="https://lewebmax.com/wp-content/uploads/lwm-email/icons/instagram-bleu.png" width="30" height="30" alt="Instagram" style="display:block;width:30px;height:30px;border:0;outline:none;"></a></td><td style="padding:0 5px;"><a href="https://wa.me/15672931610" target="_blank" style="text-decoration:none;"><img src="https://lewebmax.com/wp-content/uploads/lwm-email/icons/whatsapp-bleu.png" width="30" height="30" alt="WhatsApp" style="display:block;width:30px;height:30px;border:0;outline:none;"></a></td></tr></table></td>
+        </tr>
+        <tr>
+          <td align="center" class="lwm-pad" style="padding:14px 36px 6px 36px;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:12px;line-height:19px;color:#8a8ea8;">
             LEWEBMAX &mdash; Hébergement web, domaines et e-mails pro &middot; Paiement Mobile Money, Visa ou Mastercard.<br>
             Vous recevez cet e-mail car vous êtes client LEWEBMAX.
           </td>
