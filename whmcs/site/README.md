@@ -17,3 +17,18 @@ Réglages modifiés en base :
 - Ordre des moyens de paiement : FlexPay (Mobile Money) en premier, donc choisi par défaut.
 
 Sauvegardes sur le serveur : `/home/jephtcom/lwb-backups/boutique-20261010-153144/`.
+
+## Service « Maintenance de site web » (octobre 2026)
+
+- Groupe de produits n°14 « Maintenance de site web », adresse `/store/maintenance-site-web`.
+- Produit n°56 « Maintenance de site web » :
+  - type « Autre », sans module serveur, donc pas de compte WHM ;
+  - 30 USD par mois, sans frais d'installation ;
+  - activé automatiquement au paiement ;
+  - e-mail de bienvenue « Other Product/Service Welcome Email ».
+- Champs demandés à la commande :
+  - adresse du site (obligatoire) ;
+  - technologie (obligatoire) ;
+  - hébergeur (obligatoire) ;
+  - attentes (facultatif).
+- Dans la description du produit, une ligne qui contient « : » est affichée par WHMCS comme « valeur en gras + libellé ». Il faut donc éviter les deux-points.
