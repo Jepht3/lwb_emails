@@ -244,18 +244,82 @@ function lwm_incident_html(array $incidents, $lang, array $s)
         . $rows . $link . '</td></tr></table>';
 }
 
-function lwm_doc_start(array $s, $bg)
+function lwm_doc_start(array $s, $bg, $slug = '')
 {
     $scheme = $s['dark_mode']
         ? "<meta name=\"color-scheme\" content=\"light dark\">\n<meta name=\"supported-color-schemes\" content=\"light dark\">\n"
         : '';
+    $web = '';
+    if ($s['webview_enabled']) {
+        // {$lwm_web_url} est fourni par hooks.php ; vide pour les e-mails sensibles et dans la version web elle-même.
+        $web = '{if $lwm_web_url}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
+            . '<td align="center" class="lwm-weblink" style="padding:12px 12px 0 12px;font-family:' . LWM_FONT . ';font-size:12px;line-height:18px;color:#8a8ea8;">'
+            . lwm_i18n('E-mail mal affiché&nbsp;?', 'Email not displaying correctly?')
+            . ' <a href="{$lwm_web_url}" target="_blank" style="color:#575b78;font-weight:700;text-decoration:underline;">'
+            . lwm_i18n('Voir dans le navigateur', 'View in your browser') . '</a></td></tr></table>{/if}' . "\n";
+    }
     return "<!DOCTYPE html>\n<html lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n"
         . "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
         . "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
         . "<meta name=\"x-apple-disable-message-reformatting\">\n" . $scheme
         . "<link href=\"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap\" rel=\"stylesheet\">\n"
         . "<style type=\"text/css\">\n[EmailCSS]\n</style>\n</head>\n"
-        . '<body class="lwm-bg" style="margin:0;padding:0;background-color:' . $bg . ';">';
+        . '<body class="lwm-bg" data-lwm-theme="' . lwm_e($slug) . '" style="margin:0;padding:0;background-color:' . $bg . ';">' . "\n" . $web;
+}
+
+/** Encadré « Complétez votre offre » : produits WHMCS choisis dans les paramètres (nom, prix et lien repris du catalogue). */
+function lwm_upsell_html(array $s, $key, $lang)
+{
+    if (!$s['upsell_enabled'] || $s[$key] === '') {
+        return '';
+    }
+    try {
+        $ids = array_filter(array_map('intval', explode(',', $s[$key])));
+        $currency = Capsule::table('tblcurrencies')->where('default', 1)->first(['id', 'prefix', 'suffix']);
+        $products = Capsule::table('tblproducts as p')->leftJoin('tblproductgroups as g', 'g.id', '=', 'p.gid')
+            ->whereIn('p.id', $ids)->where('p.hidden', 0)->where('p.retired', 0)->get(['p.id', 'p.name', 'g.name as grp']);
+        $byId = [];
+        foreach ($products as $prod) {
+            $byId[(int) $prod->id] = $prod;
+        }
+        $client = lwm_trailing_slash($s['client_url']);
+        $rows = '';
+        foreach ($ids as $id) {
+            if (!isset($byId[$id])) {
+                continue;
+            }
+            $price = '';
+            if ($currency) {
+                $pr = Capsule::table('tblpricing')->where('type', 'product')->where('relid', $id)->where('currency', $currency->id)->first(['monthly', 'annually']);
+                $fmt = function ($v) use ($currency) {
+                    return trim($currency->prefix . number_format((float) $v, 2, ',', ' ') . $currency->suffix);
+                };
+                if ($pr && (float) $pr->monthly > 0) {
+                    $price = ($lang === 'en' ? 'from ' : 'dès ') . $fmt($pr->monthly) . ($lang === 'en' ? '/month' : '/mois');
+                } elseif ($pr && (float) $pr->annually > 0) {
+                    $price = $fmt($pr->annually) . ($lang === 'en' ? '/year' : '/an');
+                }
+            }
+            $rows .= '<tr><td style="padding:12px 0;border-top:1px solid #e2e5f2;font-family:' . LWM_FONT . ';font-size:14px;line-height:20px;color:#575b78;">'
+                . '<strong style="color:#0d0d2b;">' . lwm_e($byId[$id]->name) . '</strong>'
+                . ($byId[$id]->grp ? ' <span style="color:#8a8ea8;font-size:12px;">&middot; ' . lwm_e($byId[$id]->grp) . '</span>' : '')
+                . ($price !== '' ? '<br>' . lwm_e($price) : '') . '</td>'
+                . '<td align="right" style="padding:12px 0;border-top:1px solid #e2e5f2;font-family:' . LWM_FONT . ';font-size:14px;font-weight:700;white-space:nowrap;">'
+                . '<a href="' . lwm_e($client . 'cart.php?a=add&pid=' . $id) . '" target="_blank" style="color:#030673;text-decoration:none;">'
+                . ($lang === 'en' ? 'Order' : 'Commander') . '&nbsp;&rarr;</a></td></tr>';
+        }
+        if ($rows === '') {
+            return '';
+        }
+        $title = $lang === 'en' ? ($s['upsell_title_en'] ?: $s['upsell_title']) : $s['upsell_title'];
+        return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f7fc" style="background-color:#f6f7fc;border:1px solid #e2e5f2;border-radius:12px;margin:4px 0 24px 0;">'
+            . '<tr><td style="padding:16px 22px 6px 22px;">'
+            . '<p style="margin:0 0 6px 0;font-family:' . LWM_FONT . ';font-size:11px;line-height:16px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#ff6a3d;">' . lwm_e($title) . '</p>'
+            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' . $rows . '</table>'
+            . '</td></tr></table>';
+    } catch (\Throwable $e) {
+        return '';
+    }
 }
 
 /** CSS du mode nuit (Apple Mail, iOS, Outlook macOS/iOS). Gmail l'ignore et applique sa propre inversion. */
@@ -339,7 +403,7 @@ function lwm_build_theme($slug, ?array $s = null)
         $css .= lwm_dark_css();
     }
     $map = lwm_placeholders($s) + [
-        '%%doc_start%%' => lwm_doc_start($s, $themes[$slug]['bg']),
+        '%%doc_start%%' => lwm_doc_start($s, $themes[$slug]['bg'], $slug),
         '%%logo_on_light%%' => lwm_logo_on_light($s),
         '%%logo_on_light_center%%' => lwm_logo_on_light($s, true),
         '%%logo_on_dark%%' => lwm_logo_on_dark($s),
@@ -397,7 +461,11 @@ function lwm_build_body($file, ?array $s = null, $lang = 'fr')
             $tpl = $t;
         }
     }
-    $map = lwm_placeholders($s) + ['%%signature%%' => lwm_signature_html($s, $tpl ? $tpl['service'] : '', $lang)];
+    $map = lwm_placeholders($s) + [
+        '%%signature%%' => lwm_signature_html($s, $tpl ? $tpl['service'] : '', $lang),
+        '%%upsell_hosting%%' => lwm_upsell_html($s, 'upsell_hosting', $lang),
+        '%%upsell_domain%%' => lwm_upsell_html($s, 'upsell_domain', $lang),
+    ];
     $html = strtr($html, $map);
     $ov = lwm_overrides();
     $key = lwm_override_key('pre', $file, $lang);
@@ -472,15 +540,15 @@ function lwm_sample_data()
  */
 function lwm_render_sample($html, array $data)
 {
-    $html = preg_replace_callback(
-        '/\{if (?:isset\()?\$([a-z0-9_]+)\)?(?:\s*==\s*"([^"]*)")?\}(.*?)(?:\{else\}(.*?))?\{\/if\}/s',
-        function ($m) use ($data) {
+    // Conditions traitées de l'intérieur vers l'extérieur, pour gérer les {if} imbriqués.
+    $pattern = '/\{if (?:isset\()?\$([a-z0-9_]+)\)?(?:\s*==\s*"([^"]*)")?\}((?:(?!\{if ).)*?)(?:\{else\}((?:(?!\{if ).)*?))?\{\/if\}/s';
+    do {
+        $html = preg_replace_callback($pattern, function ($m) use ($data) {
             $value = isset($data[$m[1]]) ? $data[$m[1]] : '';
             $true = $m[2] !== '' ? $value === $m[2] : !empty($value);
             return $true ? $m[3] : (isset($m[4]) ? $m[4] : '');
-        },
-        $html
-    );
+        }, $html, -1, $count);
+    } while ($count > 0);
     return preg_replace_callback('/\{\$([a-z0-9_]+)\}/', function ($m) use ($data) {
         return isset($data[$m[1]]) ? $data[$m[1]] : '';
     }, $html);
@@ -495,6 +563,7 @@ function lwm_render_preview($slug, $templateName, ?array $s = null, $lang = 'fr'
     $body = lwm_build_body($tpl['fichier'], $s, $lang);
     $data = lwm_sample_data();
     $data['client_language'] = $lang === 'en' ? 'english' : 'french';
+    $data['lwm_web_url'] = '#';
     if ($s['countdown_enabled'] && strpos($body, '{$lwm_due_badge}') !== false) {
         $data['lwm_due_badge'] = lwm_due_badge_html(isset($opts['days']) ? (int) $opts['days'] : 3, $lang);
     }

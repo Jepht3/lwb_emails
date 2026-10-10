@@ -196,5 +196,15 @@
     "sujet_en": "Your LE WEB MAX benefits: 5% off renewals and 10% referral commission",
     "apercu": "-5 % sur vos renouvellements payés en avance et 10 % de commission en parrainage.",
     "apercu_en": "5% off renewals paid early and 10% referral commission."
+  },
+  {
+    "fichier": "campagne.html",
+    "template_whmcs": "Lwb Campagne",
+    "service": "commercial",
+    "sujet": "[Titre de votre campagne]",
+    "sujet_en": "[Your campaign title]",
+    "apercu": "[Texte d'aperçu affiché après le sujet]",
+    "apercu_en": "[Preview text shown after the subject]",
+    "creer": true
   }
 ]

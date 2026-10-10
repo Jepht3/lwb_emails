@@ -14,6 +14,7 @@ const LWM_TABS = [
     'settings' => 'Personnalisation',
     'templates' => 'Modèles',
     'preview' => 'Aperçu & test',
+    'journal' => 'Journal',
     'backups' => 'Sauvegardes & export',
 ];
 
@@ -231,8 +232,23 @@ function lwm_tab_settings($link, $token)
                     }
                     echo '</select>';
                 } else {
-                    $input = $type === 'number' ? 'number' : ($type === 'email' ? 'email' : ($type === 'url' ? 'url' : 'text'));
+                    $input = in_array($type, ['number', 'days'], true) ? 'number' : ($type === 'email' ? 'email' : ($type === 'url' ? 'url' : 'text'));
                     echo '<input class="form-control" type="' . $input . '" name="' . lwm_h($name) . '" value="' . lwm_h($val) . '">';
+                }
+                if ($type === 'products') {
+                    $chosen = array_filter(array_map('intval', explode(',', $val)));
+                    $names = [];
+                    foreach (Capsule::table('tblproducts')->whereIn('id', $chosen ?: [0])->get(['id', 'name']) as $prod) {
+                        $names[] = '#' . $prod->id . ' ' . $prod->name;
+                    }
+                    echo '<div class="lwm-help">' . ($names ? 'Actuellement : ' . lwm_h(implode(', ', $names)) : 'Aucun produit valide.') . '</div>';
+                    if ($key === 'upsell_hosting') {
+                        echo '<details style="margin-top:6px;"><summary class="lwm-help" style="cursor:pointer;">Voir la liste des produits (ID)</summary><div class="lwm-help" style="max-height:180px;overflow:auto;">';
+                        foreach (Capsule::table('tblproducts')->where('hidden', 0)->where('retired', 0)->orderBy('gid')->orderBy('order')->get(['id', 'name']) as $prod) {
+                            echo '#' . (int) $prod->id . ' &mdash; ' . lwm_h($prod->name) . '<br>';
+                        }
+                        echo '</div></details>';
+                    }
                 }
                 if ($key === 'logo_light' || $key === 'logo_dark') {
                     $bg = $key === 'logo_dark' ? '#030673' : '#ffffff';
@@ -315,7 +331,10 @@ function lwm_tab_templates($link, $token)
                 : ($installed ? '<span class="lwm-badge lwm-ok">LEWEBMAX</span>' : '<span class="lwm-badge lwm-orig">Origine</span>');
         };
         $fr = $badge($st['exists'], $st['installed']) . ($st['disabled'] ? ' <span class="lwm-badge lwm-off">Désactivé</span>' : '');
-        echo '<tr><td><input class="lwm-cb" type="checkbox" name="templates[]" value="' . lwm_h($name) . '"' . ($st['exists'] ? '' : ' disabled') . '></td>'
+        if (!empty($st['tpl']['creer']) && !$st['exists']) {
+            $fr = '<span class="lwm-badge lwm-orig">À créer</span>';
+        }
+        echo '<tr><td><input class="lwm-cb" type="checkbox" name="templates[]" value="' . lwm_h($name) . '"' . ($st['exists'] || !empty($st['tpl']['creer']) ? '' : ' disabled') . '></td>'
             . '<td><strong>' . lwm_h($name) . '</strong></td><td>' . lwm_h($st['subject']) . '</td>'
             . '<td>' . lwm_h($services[$st['tpl']['service']] ?? '') . '</td>'
             . '<td>' . $fr . '</td><td>' . $badge($st['en_exists'], $st['en_installed']) . '</td>'
@@ -327,6 +346,9 @@ function lwm_tab_templates($link, $token)
     echo '<button type="submit" class="btn btn-success">Installer / mettre à jour la sélection</button> '
         . '<button type="submit" class="btn btn-default" onclick="this.form.lwm_action.value=\'restore_templates\';return confirm(\'Remettre la sélection dans sa version d\\\'origine ?\');">Restaurer la sélection</button>';
     echo '<p class="lwm-help" style="margin-top:10px;">Sans sélection, le bouton « Installer » traite les ' . count($status) . ' modèles.</p></form>';
+    echo '<div class="panel panel-default"><div class="panel-body"><strong>Campagnes et envois groupés.</strong> Le modèle <strong>Lwb Campagne</strong> (à créer avec le bouton ci-dessus) '
+        . 'sert de point de départ à vos annonces&nbsp;: depuis la fiche d\'un client (Envoyer un e-mail) ou depuis l\'envoi groupé de WHMCS, choisissez-le puis remplacez les textes entre [crochets]. '
+        . 'Il reprend le thème actif et ajoute automatiquement le lien de désinscription quand WHMCS le fournit (e-mails marketing).</div></div>';
 
     $others = lwm_other_templates();
     $auto = 0;
@@ -426,4 +448,100 @@ function lwm_tab_backups($link, $token)
         . '<button class="btn btn-default">Restaurer tous les modèles</button></form>';
     echo lwm_form_open($link, $token, 'backups', 'restore_all', ' style="display:inline-block;" onsubmit="return confirm(\'Tout remettre comme avant le module ?\');"')
         . '<button class="btn btn-danger">Tout restaurer</button></form>';
+}
+
+
+/** Nom du modèle LEWEBMAX à partir du marqueur data-lwm enregistré dans le message. */
+function lwm_marker_label($marker)
+{
+    if ($marker === null || $marker === '') {
+        return '<span class="lwm-help">&mdash;</span>';
+    }
+    if ($marker === 'auto') {
+        return 'Harmonisé';
+    }
+    foreach (lwm_templates() as $name => $tpl) {
+        if (preg_replace('/\.html$/', '', $tpl['fichier']) === $marker) {
+            return lwm_h($name);
+        }
+    }
+    return lwm_h($marker);
+}
+
+function lwm_tab_journal($link, $token)
+{
+    $markerSql = "IF(message LIKE '%data-lwm=\"%', SUBSTRING_INDEX(SUBSTRING_INDEX(message, 'data-lwm=\"', -1), '\"', 1), NULL)";
+    $themeSql = "IF(message LIKE '%data-lwm-theme=\"%', SUBSTRING_INDEX(SUBSTRING_INDEX(message, 'data-lwm-theme=\"', -1), '\"', 1), NULL)";
+
+    if (isset($_GET['view'])) {
+        $mail = Capsule::table('tblemails')->where('id', (int) $_GET['view'])->first(['id', 'userid', 'subject', 'to', 'date', 'message']);
+        echo '<p><a href="' . lwm_h($link . '&tab=journal') . '">&larr; Retour au journal</a></p>';
+        if (!$mail) {
+            echo lwm_alert('warning', 'E-mail introuvable.');
+            return;
+        }
+        echo '<p><strong>' . lwm_h($mail->subject) . '</strong><br><span class="lwm-help">' . lwm_h($mail->date) . ' &middot; ' . lwm_h($mail->to) . '</span></p>'
+            . '<div class="lwm-preview-wrap"><iframe sandbox="" srcdoc="' . lwm_h($mail->message) . '" style="width:100%;height:900px;"></iframe></div>';
+        return;
+    }
+
+    $since = date('Y-m-d H:i:s', time() - 30 * 86400);
+    $stats = Capsule::table('tblemails')->where('date', '>=', $since)
+        ->selectRaw("COUNT(*) total, SUM(message LIKE '%data-lwm=%') lwm, SUM(failed = 1) failed, SUM(pending = 1) pending")->first();
+    $top = Capsule::table('tblemails')->where('date', '>=', $since)->whereRaw("message LIKE '%data-lwm=%'")
+        ->selectRaw($markerSql . ' marker, COUNT(*) n')->groupBy('marker')->orderBy('n', 'desc')->limit(8)->get();
+
+    $card = function ($label, $value, $color = '#030673') {
+        return '<div class="col-sm-3"><div class="panel panel-default"><div class="panel-body" style="text-align:center;">'
+            . '<div style="font-size:28px;font-weight:700;color:' . $color . ';">' . (int) $value . '</div><div class="lwm-help">' . lwm_h($label) . '</div></div></div></div>';
+    };
+    echo '<h4>30 derniers jours</h4><div class="row">'
+        . $card('e-mails envoyés', $stats->total ?? 0)
+        . $card('avec le design LEWEBMAX', $stats->lwm ?? 0, '#12b76a')
+        . $card('en échec', $stats->failed ?? 0, ($stats->failed ?? 0) ? '#b42318' : '#8a8ea8')
+        . $card('en attente', $stats->pending ?? 0, '#8a8ea8')
+        . '</div>';
+    if (count($top)) {
+        echo '<p><strong>Modèles les plus envoyés :</strong> ';
+        $parts = [];
+        foreach ($top as $t) {
+            $parts[] = lwm_marker_label($t->marker) . ' (' . (int) $t->n . ')';
+        }
+        echo implode(' &middot; ', $parts) . '</p>';
+    }
+
+    $q = trim((string) ($_GET['q'] ?? ''));
+    $onlyFailed = !empty($_GET['failed']);
+    echo '<form method="get" class="form-inline" style="margin:16px 0;">'
+        . '<input type="hidden" name="module" value="lewebmax_emails"><input type="hidden" name="tab" value="journal">'
+        . '<input class="form-control" name="q" value="' . lwm_h($q) . '" placeholder="Sujet ou destinataire" style="min-width:260px;"> '
+        . '<label style="margin:0 10px;font-weight:normal;"><input type="checkbox" name="failed" value="1"' . ($onlyFailed ? ' checked' : '') . '> En échec uniquement</label>'
+        . '<button class="btn btn-default">Filtrer</button></form>';
+
+    $rows = Capsule::table('tblemails as e')->leftJoin('tblclients as c', 'c.id', '=', 'e.userid')
+        ->when($q !== '', function ($query) use ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('e.subject', 'like', '%' . $q . '%')->orWhere('e.to', 'like', '%' . $q . '%');
+            });
+        })
+        ->when($onlyFailed, function ($query) {
+            $query->where('e.failed', 1);
+        })
+        ->orderBy('e.id', 'desc')->limit(50)
+        ->get(['e.id', 'e.userid', 'e.subject', 'e.to', 'e.date', 'e.failed', 'e.pending', 'e.failure_reason', 'c.firstname', 'c.lastname', 'c.companyname',
+            Capsule::raw(str_replace('message', 'e.message', $markerSql) . ' as marker'), Capsule::raw(str_replace('message', 'e.message', $themeSql) . ' as theme')]);
+
+    echo '<table class="table table-striped"><thead><tr><th>Date</th><th>Client</th><th>Sujet</th><th>Modèle</th><th>Thème</th><th>Statut</th><th></th></tr></thead><tbody>';
+    foreach ($rows as $r) {
+        $client = trim($r->firstname . ' ' . $r->lastname) ?: $r->companyname;
+        $status = $r->failed ? '<span class="lwm-badge lwm-off" title="' . lwm_h($r->failure_reason) . '">Échec</span>'
+            : ($r->pending ? '<span class="lwm-badge lwm-orig">En attente</span>' : '<span class="lwm-badge lwm-ok">Envoyé</span>');
+        echo '<tr><td style="white-space:nowrap;">' . lwm_h(substr($r->date, 0, 16)) . '</td>'
+            . '<td>' . ($r->userid ? '<a href="clientssummary.php?userid=' . (int) $r->userid . '">' . lwm_h($client ?: '#' . $r->userid) . '</a><br>' : '') . '<span class="lwm-help">' . lwm_h($r->to) . '</span></td>'
+            . '<td>' . lwm_h($r->subject) . '</td><td>' . lwm_marker_label($r->marker) . '</td>'
+            . '<td>' . ($r->theme ? lwm_h(ucfirst($r->theme)) : '<span class="lwm-help">&mdash;</span>') . '</td>'
+            . '<td>' . $status . '</td>'
+            . '<td><a href="' . lwm_h($link . '&tab=journal&view=' . (int) $r->id) . '">Voir</a></td></tr>';
+    }
+    echo '</tbody></table><p class="lwm-help">Les 50 derniers e-mails. « Modèle » et « Thème » sont renseignés pour les e-mails envoyés depuis l\'installation du module.</p>';
 }

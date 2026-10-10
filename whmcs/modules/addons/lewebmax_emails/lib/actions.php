@@ -14,8 +14,20 @@ const LWM_SETTINGS_KEYS = ['EmailCSS', 'EmailGlobalHeader', 'EmailGlobalFooter']
 // Version par défaut (français) et version anglaise des modèles ; les autres traductions restent intactes.
 const LWM_TEMPLATE_LANGUAGES = ['' => 'fr', 'english' => 'en'];
 
+const LWM_WEB_TABLE = 'mod_lewebmax_emails_web';
+
 function lwm_create_backup_table()
 {
+    if (!Capsule::schema()->hasTable(LWM_WEB_TABLE)) {
+        Capsule::schema()->create(LWM_WEB_TABLE, function ($table) {
+            $table->string('token', 40)->primary();
+            $table->string('messagename', 191);
+            $table->integer('relid')->default(0);
+            $table->integer('userid')->default(0);
+            $table->timestamp('created_at')->nullable();
+            $table->index('created_at');
+        });
+    }
     if (!Capsule::schema()->hasTable(LWM_BACKUP_TABLE)) {
         Capsule::schema()->create(LWM_BACKUP_TABLE, function ($table) {
             $table->increments('id');
@@ -116,12 +128,24 @@ function lwm_install_templates(?array $names = null)
             ->where('name', $name)
             ->whereIn('language', array_keys(LWM_TEMPLATE_LANGUAGES))
             ->get();
+        if (count($rows) === 0 && !empty($tpl['creer'])) {
+            // Modèle propre au module (campagne) : créé en français et en anglais.
+            foreach (array_keys(LWM_TEMPLATE_LANGUAGES) as $language) {
+                Capsule::table('tblemailtemplates')->insert([
+                    'type' => 'general', 'name' => $name, 'subject' => '', 'message' => '', 'attachments' => '',
+                    'fromname' => '', 'fromemail' => '', 'disabled' => 0, 'custom' => 1, 'language' => $language,
+                    'copyto' => '', 'blind_copy_to' => '', 'plaintext' => 0,
+                    'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
+            $rows = Capsule::table('tblemailtemplates')->where('name', $name)->whereIn('language', array_keys(LWM_TEMPLATE_LANGUAGES))->get();
+        }
         if (count($rows) === 0) {
             $missing[] = $name;
             continue;
         }
         foreach ($rows as $row) {
-            if (!lwm_has_backup('template', $row->name, $row->language)) {
+            if (empty($tpl['creer']) && !lwm_has_backup('template', $row->name, $row->language)) {
                 Capsule::table(LWM_BACKUP_TABLE)->insert([
                     'kind' => 'template',
                     'name' => $row->name,

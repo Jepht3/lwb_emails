@@ -100,6 +100,15 @@ function lwm_fields()
         'incident_maintenance' => ['Compte à rebours et incidents', 'Annoncer aussi les maintenances planifiées', 'on', 'yesno', ''],
         'incident_url' => ['Compte à rebours et incidents', 'Page de statut (URL)', 'https://my.lewebmax.com/index.php?m=lwb_statut', 'url', ''],
 
+        'upsell_enabled' => ['Suggestions de produits', 'Afficher « Complétez votre offre »', 'on', 'yesno', 'Encadré de produits recommandés dans les e-mails d’hébergement activé et de domaine enregistré.'],
+        'upsell_title' => ['Suggestions de produits', 'Titre', 'Complétez votre offre', 'text', ''],
+        'upsell_title_en' => ['Suggestions de produits', 'Titre (anglais)', 'Complete your setup', 'text', ''],
+        'upsell_hosting' => ['Suggestions de produits', 'Produits proposés après un hébergement', '37,53', 'products', 'Numéros (ID) de produits WHMCS, séparés par des virgules. Nom, prix et lien de commande sont repris automatiquement.'],
+        'upsell_domain' => ['Suggestions de produits', 'Produits proposés après un domaine', '40,37', 'products', ''],
+
+        'webview_enabled' => ['Version web', 'Lien « Voir dans le navigateur »', 'on', 'yesno', 'Ajouté en haut des e-mails clients. Jamais pour les e-mails qui contiennent un mot de passe ou un lien de réinitialisation.'],
+        'webview_days' => ['Version web', 'Durée de validité du lien (jours)', '30', 'days', 'Entre 1 et 365.'],
+
         'dark_mode' => ['Options', 'Optimiser pour le mode nuit', 'on', 'yesno', 'Logo blanc et couleurs sombres dans Apple Mail, iOS et Outlook. Gmail applique sa propre inversion.'],
         'test_email' => ['Options', 'Adresse des e-mails de test', '', 'email', 'Par défaut : l’e-mail de l’administrateur connecté.'],
     ];
@@ -152,6 +161,11 @@ function lwm_save_settings(array $input)
             continue;
         } elseif ($type === 'number') {
             $v = (string) max(100, min(240, (int) $v ?: (int) $default));
+        } elseif ($type === 'days') {
+            $v = (string) max(1, min(365, (int) $v ?: (int) $default));
+        } elseif ($type === 'products') {
+            $ids = array_filter(array_map('intval', preg_split('/[^0-9]+/', $v)));
+            $v = implode(',', array_slice(array_unique($ids), 0, 3));
         } elseif (strpos($type, 'select:') === 0) {
             $allowed = explode('|', substr($type, 7));
             $v = in_array($v, $allowed, true) ? $v : $default;
