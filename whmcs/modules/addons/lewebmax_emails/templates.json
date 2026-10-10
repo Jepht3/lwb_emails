@@ -206,5 +206,16 @@
     "apercu": "[Texte d'aperçu affiché après le sujet]",
     "apercu_en": "[Preview text shown after the subject]",
     "creer": true
+  },
+  {
+    "fichier": "bienvenue-maintenance.html",
+    "template_whmcs": "Lwb Maintenance Bienvenue",
+    "service": "support",
+    "sujet": "Votre maintenance de site web démarre",
+    "sujet_en": "Your website maintenance starts now",
+    "apercu": "Votre abonnement de maintenance est actif : voici les prochaines étapes.",
+    "apercu_en": "Your maintenance plan is active: here are the next steps.",
+    "creer": true,
+    "type": "product"
   }
 ]

@@ -129,10 +129,10 @@ function lwm_install_templates(?array $names = null)
             ->whereIn('language', array_keys(LWM_TEMPLATE_LANGUAGES))
             ->get();
         if (count($rows) === 0 && !empty($tpl['creer'])) {
-            // Modèle propre au module (campagne) : créé en français et en anglais.
+            // Modèle propre au module (campagne, bienvenue maintenance) : créé en français et en anglais.
             foreach (array_keys(LWM_TEMPLATE_LANGUAGES) as $language) {
                 Capsule::table('tblemailtemplates')->insert([
-                    'type' => 'general', 'name' => $name, 'subject' => '', 'message' => '', 'attachments' => '',
+                    'type' => $tpl['type'] ?? 'general', 'name' => $name, 'subject' => '', 'message' => '', 'attachments' => '',
                     'fromname' => '', 'fromemail' => '', 'disabled' => 0, 'custom' => 1, 'language' => $language,
                     'copyto' => '', 'blind_copy_to' => '', 'plaintext' => 0,
                     'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'),

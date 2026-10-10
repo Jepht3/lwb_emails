@@ -32,3 +32,28 @@ Sauvegardes sur le serveur : `/home/jephtcom/lwb-backups/boutique-20261010-15314
   - hébergeur (obligatoire) ;
   - attentes (facultatif).
 - Dans la description du produit, une ligne qui contient « : » est affichée par WHMCS comme « valeur en gras + libellé ». Il faut donc éviter les deux-points.
+
+## Relances et avertissements avant expiration (octobre 2026)
+
+**Hook `includes/hooks/lewebmax_reminders.php`** : il remplace le rythme « tous les 3 jours » par des étapes fixes, calées sur la suspension automatique à J+5.
+
+| Moment | E-mail |
+|---|---|
+| J-14, J-7, J-3, J-1 | Rappel avant échéance (avec compte à rebours Lwb-emails) |
+| J+1 | Facture en retard |
+| J+3 | Deuxième rappel |
+| J+4 | Dernier rappel avant suspension |
+| J+10, J+20, J+30 | Deuxième rappel, puis arrêt |
+
+**Réglages modifiés :**
+
+- `CCAttemptOnlyOnce` activé. WHMCS tentait chaque jour d'encaisser les factures PayPal et envoyait chaque jour « Paiement à effectuer », même pour des factures de 2024.
+- `CreateInvoiceDaysBeforeMonthly` réglé à 7 : les factures mensuelles (maintenance) sont créées 7 jours avant l'échéance. Les factures annuelles restent créées 30 jours avant.
+- `DomainRenewalNotices` réglé à `60,30,-3` : premier avis domaine 60 jours avant l'expiration. Les rappels de facture prennent ensuite le relais à J-14, J-7, J-3 et J-1.
+
+**Maintenance de site web (produit n°56) :**
+
+- E-mail de bienvenue dédié « Lwb Maintenance Bienvenue », qui fait partie du module Lwb-emails.
+- Champs d'accès administrateur demandés à la commande : choix « compte créé pour info@lewebmax.com » ou « compte existant », adresse de connexion, identifiant, mot de passe.
+- Le mot de passe est masqué dans tous les e-mails par `lewebmax_storefront.php`, et ces e-mails n'ont pas de version web. Il reste visible dans l'administration WHMCS, sur la fiche du service.
+- Les options d'une liste déroulante ne doivent pas contenir d'apostrophe droite (`'`) : WHMCS les refuse (« Invalid Select Option »). Utiliser `’`.

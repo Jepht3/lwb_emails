@@ -8,6 +8,10 @@
  * « Inclus dans votre offre » pour les extensions offertes (.com, .net, .org),
  * dans le résultat principal comme dans les suggestions.
  *
+ * Masque aussi, dans tous les e-mails (confirmation de commande, notification
+ * admin…), le mot de passe administrateur demandé à la commande de la
+ * maintenance de site web : il reste visible dans l'administration WHMCS.
+ *
  * À placer dans includes/hooks/ de WHMCS.
  */
 
@@ -102,4 +106,24 @@ HTML;
         logActivity('LE WEB MAX boutique (domaine inclus) : ' . $e->getMessage());
         return '';
     }
+});
+
+/** Libellés des champs personnalisés dont la valeur ne doit jamais partir par e-mail. */
+const LWB_SECRET_FIELDS = ['Mot de passe administrateur du site'];
+
+add_hook('EmailPreSend', 1, function ($vars) {
+    $out = [];
+    foreach ((array) ($vars['mergefields'] ?? []) as $key => $value) {
+        if (!is_string($value) || $value === '') {
+            continue;
+        }
+        $masked = $value;
+        foreach (LWB_SECRET_FIELDS as $label) {
+            $masked = preg_replace('/(' . preg_quote($label, '/') . '\s*:?\s*(?:<[^>]*>\s*)*)([^<\r\n]+)/u', '$1••••••••', $masked);
+        }
+        if ($masked !== null && $masked !== $value) {
+            $out[$key] = $masked;
+        }
+    }
+    return $out;
 });

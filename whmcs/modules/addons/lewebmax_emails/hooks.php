@@ -5,7 +5,7 @@
  * Ajoute, au moment de l'envoi de chaque e-mail client, les variables :
  * - {$lwm_due_badge} / {$lwm_days_left} : badge d'échéance des factures impayées ;
  * - {$lwm_incident} : encadré des incidents ouverts dans le module lwb_statut ;
- * - {$lwm_web_url} : lien « Voir dans le navigateur » (sauf e-mails contenant un mot de passe).
+ * - {$lwm_web_url} : lien « Voir dans le navigateur » (sauf e-mails qui contiennent ou mentionnent un mot de passe).
  */
 
 use WHMCS\Database\Capsule;
@@ -30,10 +30,22 @@ function lwm_hook_webview_allowed($messagename)
     return true;
 }
 
-/** Crée le lien de version web (jeton aléatoire, valable N jours) et nettoie les liens expirés. */
-function lwm_hook_web_url(array $s, $messagename, $relid)
+/** Vrai si une valeur de l'e-mail mentionne un mot de passe (ex. identifiants transmis à la commande). */
+function lwm_hook_mentions_secret(array $mergefields)
 {
-    if (!$s['webview_enabled'] || defined('LWM_WEB_VIEW') || !lwm_hook_webview_allowed($messagename)) {
+    foreach ($mergefields as $value) {
+        if (is_string($value) && preg_match('/mot de passe|password/i', $value)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/** Crée le lien de version web (jeton aléatoire, valable N jours) et nettoie les liens expirés. */
+function lwm_hook_web_url(array $s, $messagename, $relid, array $mergefields = [])
+{
+    if (!$s['webview_enabled'] || defined('LWM_WEB_VIEW') || !lwm_hook_webview_allowed($messagename)
+        || lwm_hook_mentions_secret($mergefields)) {
         return '';
     }
     lwm_create_backup_table();
@@ -107,7 +119,7 @@ add_hook('EmailPreSend', 5, function ($vars) {
             }
         }
 
-        $merge['lwm_web_url'] = lwm_hook_web_url($s, $vars['messagename'], $relid);
+        $merge['lwm_web_url'] = lwm_hook_web_url($s, $vars['messagename'], $relid, (array) ($vars['mergefields'] ?? []));
 
         if ($s['incident_enabled']) {
             $merge['lwm_incident'] = lwm_incident_html(lwm_hook_incidents($s), $lang, $s);
