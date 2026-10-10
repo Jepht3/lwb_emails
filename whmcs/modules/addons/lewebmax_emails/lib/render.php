@@ -283,6 +283,12 @@ function lwm_upsell_html(array $s, $key, $lang)
             $byId[(int) $prod->id] = $prod;
         }
         $client = lwm_trailing_slash($s['client_url']);
+        // Le groupe n'est affiché que pour distinguer deux produits de même nom (ex. deux « Business »).
+        $nameCount = [];
+        foreach ($byId as $prod) {
+            $key = mb_strtolower($prod->name);
+            $nameCount[$key] = ($nameCount[$key] ?? 0) + 1;
+        }
         $rows = '';
         foreach ($ids as $id) {
             if (!isset($byId[$id])) {
@@ -317,7 +323,7 @@ function lwm_upsell_html(array $s, $key, $lang)
             }
             $rows .= '<tr><td style="padding:12px 0;border-top:1px solid #e2e5f2;font-family:' . LWM_FONT . ';font-size:14px;line-height:20px;color:#575b78;">'
                 . '<strong style="color:#0d0d2b;">' . lwm_e($byId[$id]->name) . '</strong>'
-                . ($byId[$id]->grp ? ' <span style="color:#8a8ea8;font-size:12px;">&middot; ' . lwm_e($byId[$id]->grp) . '</span>' : '')
+                . ($byId[$id]->grp && $nameCount[mb_strtolower($byId[$id]->name)] > 1 ? ' <span style="color:#8a8ea8;font-size:12px;">&middot; ' . lwm_e($byId[$id]->grp) . '</span>' : '')
                 . ($price !== '' ? '<br>' . lwm_e($price) : '') . '</td>'
                 . '<td align="right" style="padding:12px 0;border-top:1px solid #e2e5f2;font-family:' . LWM_FONT . ';font-size:14px;font-weight:700;white-space:nowrap;">'
                 . '<a href="' . lwm_e($client . 'cart.php?a=add&pid=' . $id) . '" target="_blank" style="color:#030673;text-decoration:none;">'
