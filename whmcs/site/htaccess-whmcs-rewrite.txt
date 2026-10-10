@@ -1,0 +1,12 @@
+
+### BEGIN - WHMCS managed rules - DO NOT EDIT BETWEEN WHMCS MARKERS ###
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteBase /
+# Adresses courtes (/store, /knowledgebase, /announcements…) traitées par index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond $0#%{REQUEST_URI} ([^#]*)#(.*)\1$
+RewriteRule ^.*$ %2index.php [QSA,L]
+</IfModule>
+### END - WHMCS managed rules - DO NOT EDIT BETWEEN WHMCS MARKERS ###

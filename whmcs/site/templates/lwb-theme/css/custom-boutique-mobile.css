@@ -1,0 +1,40 @@
+
+/* === Boutique mobile (audit 10/2026) ============================== */
+/* Onglets mobiles : les 5 onglets tiennent sur l'écran (icône au-dessus du texte). */
+@media (max-width: 575.98px) {
+    body.lwx .lwx-mtabs { gap: 2px; padding: 0 6px; overflow-x: hidden; }
+    body.lwx .lwx-mtabs a {
+        flex: 1 1 0; min-width: 0; flex-direction: column; justify-content: center; gap: 3px;
+        padding: 8px 2px 9px; font-size: 11.5px; line-height: 1.2; text-align: center;
+    }
+    body.lwx .lwx-mtabs a i { font-size: 16px; margin: 0 !important; }
+}
+/* Aide, annonces… : le contenu passe avant la colonne latérale sur mobile. */
+@media (max-width: 991.98px) {
+    body.lwx .row > .lwx-aside { order: 2; }
+    body.lwx .row > .primary-content { order: 1; }
+    body.lwx .lwx-aside .sidebar { position: static; }
+}
+/* Panier : catégories et actions en une ligne compacte au lieu de deux grands blocs. */
+@media (max-width: 991.98px) {
+    body.lwx #order-standard_cart .sidebar-collapsed { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    body.lwx #order-standard_cart .sidebar-collapsed .card,
+    body.lwx #order-standard_cart .sidebar-collapsed .panel { margin: 0 !important; border: 0; box-shadow: none; background: transparent; }
+    body.lwx #order-standard_cart .sidebar-collapsed .card-header,
+    body.lwx #order-standard_cart .sidebar-collapsed .panel-heading { display: none; }
+    body.lwx #order-standard_cart .sidebar-collapsed .card-body,
+    body.lwx #order-standard_cart .sidebar-collapsed .panel-body { padding: 0 !important; }
+    body.lwx #order-standard_cart .sidebar-collapsed select { height: 42px; font-size: 13px; padding-left: 10px; }
+}
+/* Configuration de l'offre : la liste des cycles ne déborde plus de l'écran. */
+body.lwx #order-standard_cart select,
+body.lwx #order-standard_cart .form-control { max-width: 100%; }
+body.lwx #order-standard_cart #inputBillingcycle { width: 100%; min-width: 0; text-overflow: ellipsis; }
+body.lwx #order-standard_cart .secondary-cart-body,
+body.lwx #order-standard_cart .cart-body { min-width: 0; }
+@media (max-width: 991.98px) {
+    body.lwx #order-standard_cart #scrollingPanelContainer,
+    body.lwx #order-standard_cart #orderSummary { position: static !important; top: auto !important; transform: none !important; }
+}
+/* Domaine inclus dans l'offre (voir includes/hooks/lewebmax_storefront.php). */
+body.lwx #order-standard_cart .lwb-free-domain { color: #0f8a4b !important; font-weight: 800; }
