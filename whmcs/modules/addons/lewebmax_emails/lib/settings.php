@@ -103,8 +103,8 @@ function lwm_fields()
         'upsell_enabled' => ['Suggestions de produits', 'Afficher « Complétez votre offre »', 'on', 'yesno', 'Encadré de produits recommandés dans les e-mails d’hébergement activé et de domaine enregistré.'],
         'upsell_title' => ['Suggestions de produits', 'Titre', 'Complétez votre offre', 'text', ''],
         'upsell_title_en' => ['Suggestions de produits', 'Titre (anglais)', 'Complete your setup', 'text', ''],
-        'upsell_hosting' => ['Suggestions de produits', 'Produits proposés après un hébergement', '37,53', 'products', 'Numéros (ID) de produits WHMCS, séparés par des virgules. Nom, prix et lien de commande sont repris automatiquement.'],
-        'upsell_domain' => ['Suggestions de produits', 'Produits proposés après un domaine', '40,37', 'products', ''],
+        'upsell_hosting' => ['Suggestions de produits', 'Produits proposés après un hébergement', '53,54', 'products', 'Numéros (ID) de produits WHMCS, séparés par des virgules. Nom, prix et lien de commande sont repris automatiquement.'],
+        'upsell_domain' => ['Suggestions de produits', 'Produits proposés après un domaine', '53,54', 'products', ''],
 
         'webview_enabled' => ['Version web', 'Lien « Voir dans le navigateur »', 'on', 'yesno', 'Ajouté en haut des e-mails clients. Jamais pour les e-mails qui contiennent un mot de passe ou un lien de réinitialisation.'],
         'webview_days' => ['Version web', 'Durée de validité du lien (jours)', '30', 'days', 'Entre 1 et 365.'],

@@ -290,14 +290,29 @@ function lwm_upsell_html(array $s, $key, $lang)
             }
             $price = '';
             if ($currency) {
-                $pr = Capsule::table('tblpricing')->where('type', 'product')->where('relid', $id)->where('currency', $currency->id)->first(['monthly', 'annually']);
+                $pr = Capsule::table('tblpricing')->where('type', 'product')->where('relid', $id)->where('currency', $currency->id)->first();
                 $fmt = function ($v) use ($currency) {
                     return trim($currency->prefix . number_format((float) $v, 2, ',', ' ') . $currency->suffix);
                 };
-                if ($pr && (float) $pr->monthly > 0) {
-                    $price = ($lang === 'en' ? 'from ' : 'dès ') . $fmt($pr->monthly) . ($lang === 'en' ? '/month' : '/mois');
-                } elseif ($pr && (float) $pr->annually > 0) {
-                    $price = $fmt($pr->annually) . ($lang === 'en' ? '/year' : '/an');
+                // Premier cycle disponible ; s'il comporte des frais de création, on affiche le tarif global (création + 1re période).
+                $cycles = [
+                    'monthly' => ['msetupfee', '/mois', '/month'],
+                    'quarterly' => ['qsetupfee', '/trimestre', '/quarter'],
+                    'semiannually' => ['ssetupfee', '/semestre', '/6 months'],
+                    'annually' => ['asetupfee', '/an', '/year'],
+                    'biennially' => ['bsetupfee', '/2 ans', '/2 years'],
+                ];
+                foreach ($cycles as $cycle => $c) {
+                    if (!$pr || (float) $pr->$cycle < 0) {
+                        continue;
+                    }
+                    $setup = max(0, (float) $pr->{$c[0]});
+                    if ($setup > 0) {
+                        $price = $fmt($setup + (float) $pr->$cycle) . ($lang === 'en' ? ' all inclusive' : ' tout compris');
+                    } elseif ((float) $pr->$cycle > 0) {
+                        $price = ($cycle === 'monthly' ? ($lang === 'en' ? 'from ' : 'dès ') : '') . $fmt($pr->$cycle) . ($lang === 'en' ? $c[2] : $c[1]);
+                    }
+                    break;
                 }
             }
             $rows .= '<tr><td style="padding:12px 0;border-top:1px solid #e2e5f2;font-family:' . LWM_FONT . ';font-size:14px;line-height:20px;color:#575b78;">'

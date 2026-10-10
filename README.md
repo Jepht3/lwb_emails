@@ -57,7 +57,7 @@ Le module ajoute la page **Modules complémentaires > Lwb-emails**, organisée e
 
 **Nouveautés v2.3** :
 
-- **Suggestions de produits** (« Complétez votre offre ») dans les e-mails d'hébergement activé et de domaine enregistré : vous choisissez jusqu'à 3 produits WHMCS par numéro ; le nom, le groupe, le prix (devise par défaut) et le lien de commande sont repris du catalogue.
+- **Suggestions de produits** (« Complétez votre offre ») dans les e-mails d'hébergement activé et de domaine enregistré : vous choisissez jusqu’à 3 produits WHMCS par numéro (par défaut les deux offres de site web, n° 53 et 54) ; le nom, le groupe, le prix et le lien de commande sont repris du catalogue. Quand le produit a des frais de création, c’est le tarif global (création + 1re période) qui est affiché.
 - **Version web** : lien « Voir dans le navigateur » en haut des e-mails clients, vers `modules/addons/lewebmax_emails/web.php?k=…` (jeton aléatoire, valable 30 jours par défaut). L'e-mail est régénéré avec les données actuelles. Les e-mails qui contiennent un mot de passe ou un lien de réinitialisation n'ont jamais de version web.
 - **Modèle de campagne « Lwb Campagne »** (créé par le module, français et anglais) pour vos annonces et envois groupés, avec le lien de désinscription de WHMCS quand il est fourni.
 
