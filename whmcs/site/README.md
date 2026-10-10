@@ -57,3 +57,33 @@ Sauvegardes sur le serveur : `/home/jephtcom/lwb-backups/boutique-20261010-15314
 - Champs d'accès administrateur demandés à la commande : choix « compte créé pour info@lewebmax.com » ou « compte existant », adresse de connexion, identifiant, mot de passe.
 - Le mot de passe est masqué dans tous les e-mails par `lewebmax_storefront.php`, et ces e-mails n'ont pas de version web. Il reste visible dans l'administration WHMCS, sur la fiche du service.
 - Les options d'une liste déroulante ne doivent pas contenir d'apostrophe droite (`'`) : WHMCS les refuse (« Invalid Select Option »). Utiliser `’`.
+
+## Extension Lwb-dashboard (tableau de bord admin)
+
+Dossier `whmcs/modules/addons/lwb_dashboard`, archive `dist/lwb_dashboard.zip`. L'extension est en lecture seule : elle ne modifie aucune donnée.
+
+**Accès :** Modules complémentaires › Lwb-dashboard (`/kota/addonmodules.php?module=lwb_dashboard`), plus un widget « LEWEBMAX en un coup d'œil » sur l'accueil de l'administration.
+
+**Contenu :**
+
+- 8 indicateurs :
+  - encaissé ce mois, comparé à la même date le mois précédent ;
+  - revenu récurrent mensuel ;
+  - impayés ;
+  - commandes en attente ;
+  - clients ;
+  - services ;
+  - domaines ;
+  - tickets.
+- Graphique des encaissements sur 6, 12 ou 24 mois, avec info-bulle et tableau des données.
+- Impayés par ancienneté et plus gros soldes.
+- Renouvellements des 30 prochains jours, avec l'état de la facture.
+- Domaines à surveiller :
+  - en période de grâce ;
+  - payés mais pas renouvelés ;
+  - expirant dans 15 jours ;
+  - sans registraire.
+- Revenus par activité et par moyen de paiement.
+- Dernières commandes, derniers paiements, tickets à traiter, meilleurs clients.
+
+Captures : `previews/dashboard/` (données d'exemple).
