@@ -5,7 +5,10 @@
  * Ajoute, au moment de l'envoi de chaque e-mail client, les variables :
  * - {$lwm_due_badge} / {$lwm_days_left} : badge d'échéance des factures impayées ;
  * - {$lwm_incident} : encadré des incidents ouverts dans le module lwb_statut ;
- * - {$lwm_web_url} : lien « Voir dans le navigateur » (sauf e-mails qui contiennent ou mentionnent un mot de passe).
+ * - {$lwm_web_url} : lien « Voir dans le navigateur » (sauf e-mails qui contiennent ou mentionnent un mot de passe) ;
+ * - {$lwm_amount_full} / {$lwm_balance_full} / {$lwm_early_offer} : remise pour paiement anticipé
+ *   (hook lewebmax_early_payment.php). Le montant affiché est le prix normal ; la remise est
+ *   présentée comme une offre, avec sa date limite et le montant dû après cette date.
  */
 
 use WHMCS\Database\Capsule;
@@ -81,6 +84,79 @@ function lwm_hook_client_lang($type, $relid)
     return strtolower($lang) === 'english' ? 'en' : 'fr';
 }
 
+/** Montant formaté dans la devise du client. */
+function lwm_hook_money($amount, $userId)
+{
+    $cur = (int) Capsule::table('tblclients')->where('id', (int) $userId)->value('currency');
+    if (function_exists('formatCurrency')) {
+        try {
+            return trim((string) formatCurrency((float) $amount, $cur ?: null));
+        } catch (\Throwable $e) {
+        }
+    }
+    $c = Capsule::table('tblcurrencies')->where($cur ? 'id' : 'default', $cur ?: 1)->first(['prefix', 'suffix']);
+    return trim(($c ? $c->prefix : '') . number_format((float) $amount, 2, '.', ' ') . ($c ? $c->suffix : ''));
+}
+
+/** Encadré de l'offre (fonction pure). $daysLeft : jours avant la date limite. */
+function lwm_early_offer_html($daysLeft, $date, $price, $saving, $full, $percent, $lang)
+{
+    $en = $lang === 'en';
+    $pct = $percent > 0 ? '&minus;' . (int) $percent . '&nbsp;%, ' : '';
+    if ($daysLeft <= 0) {
+        $head = $en ? '&#9203; Last day for the early payment offer' : '&#9203; Dernier jour pour l\'offre paiement anticipé';
+    } elseif ($daysLeft <= 3) {
+        $head = $en ? '&#9203; Only ' . $daysLeft . ' day' . ($daysLeft > 1 ? 's' : '') . ' left for the early payment offer'
+            : '&#9203; Plus que ' . $daysLeft . ' jour' . ($daysLeft > 1 ? 's' : '') . ' pour l\'offre paiement anticipé';
+    } else {
+        $head = $en ? '&#127873; Early payment offer' : '&#127873; Offre paiement anticipé';
+    }
+    $e = function ($v) {
+        return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
+    };
+    $body = $en
+        ? 'Pay this invoice by <strong>' . $e($date) . '</strong> and pay only <strong>' . $e($price) . '</strong> (' . $pct . 'you save ' . $e($saving) . ').<br>After this date, the amount will be <strong>' . $e($full) . '</strong>.'
+        : 'Réglez cette facture au plus tard le <strong>' . $e($date) . '</strong> et ne payez que <strong>' . $e($price) . '</strong> (' . $pct . 'soit ' . $e($saving) . ' d\'économie).<br>Passé cette date, le montant sera de <strong>' . $e($full) . '</strong>.';
+    return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px 0;"><tr>'
+        . '<td style="padding:14px 16px;border:1px solid #f5c26b;border-radius:12px;background:#fff6df;font-family:Plus Jakarta Sans,Arial,Helvetica,sans-serif;font-size:14px;line-height:21px;color:#5a3d00;">'
+        . '<strong style="color:#5a3d00;">' . $head . '</strong><br>' . $body . '</td></tr></table>';
+}
+
+/**
+ * Variables de la remise anticipée pour un e-mail de facture. Sans remise valable,
+ * les montants sont ceux de WHMCS et l'encadré est vide.
+ */
+function lwm_hook_early_offer($invoiceId, array $mergefields, $lang)
+{
+    $out = [
+        'lwm_amount_full' => (string) ($mergefields['invoice_total'] ?? ''),
+        'lwm_balance_full' => (string) ($mergefields['invoice_balance'] ?? ($mergefields['invoice_total'] ?? '')),
+        'lwm_early_offer' => '',
+    ];
+    if (!Capsule::schema()->hasTable('mod_lwm_early_discounts')) {
+        return $out;
+    }
+    $inv = Capsule::table('tblinvoices')->where('id', (int) $invoiceId)->first(['id', 'userid', 'status', 'total']);
+    if (!$inv || $inv->status !== 'Unpaid') {
+        return $out;
+    }
+    $d = Capsule::table('mod_lwm_early_discounts')->where('invoice_id', $inv->id)->whereNull('removed_at')
+        ->where('deadline', '>=', date('Y-m-d'))->first();
+    if (!$d) {
+        return $out;
+    }
+    $paid = (float) Capsule::table('tblaccounts')->where('invoiceid', $inv->id)->sum('amountin')
+        - (float) Capsule::table('tblaccounts')->where('invoiceid', $inv->id)->sum('amountout');
+    $balance = max(0, (float) $inv->total - $paid);
+    $full = $balance + (float) $d->amount;
+    $days = (int) floor((strtotime($d->deadline) - strtotime(date('Y-m-d'))) / 86400);
+    $out['lwm_amount_full'] = lwm_hook_money((float) $inv->total + (float) $d->amount, $inv->userid);
+    $out['lwm_balance_full'] = lwm_hook_money($full, $inv->userid);
+    $out['lwm_early_offer'] = lwm_early_offer_html($days, date('d/m/Y', strtotime($d->deadline)), lwm_hook_money($balance, $inv->userid),
+        lwm_hook_money($d->amount, $inv->userid), lwm_hook_money($full, $inv->userid), defined('LWM_EARLY_PERCENT') ? LWM_EARLY_PERCENT : 0, $lang);
+    return $out;
+}
+
 /** Incidents ouverts du module lwb_statut à annoncer aux clients. */
 function lwm_hook_incidents(array $s)
 {
@@ -117,6 +193,10 @@ add_hook('EmailPreSend', 5, function ($vars) {
                 $merge['lwm_days_left'] = $days;
                 $merge['lwm_due_badge'] = lwm_due_badge_html($days, $lang);
             }
+        }
+
+        if ($tpl->type === 'invoice' && $relid) {
+            $merge += lwm_hook_early_offer($relid, (array) ($vars['mergefields'] ?? []), $lang);
         }
 
         $merge['lwm_web_url'] = lwm_hook_web_url($s, $vars['messagename'], $relid, (array) ($vars['mergefields'] ?? []));
